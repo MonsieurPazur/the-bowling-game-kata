@@ -2,6 +2,7 @@
 
 namespace Test;
 
+use App\Game;
 use PHPUnit\Framework\TestCase;
 
 /**
