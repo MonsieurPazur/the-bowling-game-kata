@@ -12,4 +12,14 @@ namespace App;
  */
 class Frame
 {
+    private $last;
+
+    /**
+     * Frame constructor.
+     * @param $last
+     */
+    public function __construct($last)
+    {
+        $this->last = $last;
+    }
 }

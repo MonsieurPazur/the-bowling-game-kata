@@ -102,6 +102,11 @@ class Game
     private $frames;
 
     /**
+     * @var Frame
+     */
+    private $frame;
+
+    /**
      * Game constructor.
      */
     public function __construct()
@@ -262,6 +267,7 @@ class Game
         if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
             $this->currentFrame++;
+            $this->frame = $this->frames[$this->currentFrame];
         } else {
             $this->previousRoll = $pins;
         }
@@ -351,7 +357,7 @@ class Game
      */
     private function isLastFrame(): bool
     {
-        return self::FRAMES === $this->currentFrame;
+        return $this->frame->isLast();
     }
 
     /**
@@ -370,8 +376,10 @@ class Game
      */
     private function initFrames(): void
     {
-        for ($i = 0; $i < self::FRAMES; $i++) {
-            $this->frames[] = new Frame();
+        for ($i = 0; $i < self::FRAMES - 1; $i++) {
+            $this->frames[] = new Frame(false);
         }
+        $this->frames[] = new Frame(true);
+        $this->frame = $this->frames[0];
     }
 }
