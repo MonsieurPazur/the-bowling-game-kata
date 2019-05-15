@@ -51,6 +51,13 @@ class Game
      */
     private $rollCount;
 
+    private $rolls = [];
+
+    private $strikes = [
+        '1' => null,
+        '2' => null
+    ];
+
     /**
      * Game constructor.
      */
@@ -74,6 +81,20 @@ class Game
         $this->validateRoll($pins);
         $this->score += $pins;
 
+
+        $this->rolls[] = $pins;
+        if (!is_null($this->strikes['1'])) {
+            $this->rolls[$this->strikes['1']] += $pins;
+            $this->strikes['1'] = null;
+        }
+        if (!is_null($this->strikes['2'])) {
+            $this->rolls[$this->strikes['2']] += $pins;
+            $this->strikes['1'] = $this->strikes['2'];
+            $this->strikes['2'] = null;
+        }
+        if (10 === $pins) {
+            $this->strikes['2'] = array_keys($this->rolls)[count($this->rolls) - 1];
+        }
         $this->rollCount++;
         $this->updatePrevious($pins);
     }
@@ -85,7 +106,11 @@ class Game
      */
     public function score(): int
     {
-        return $this->score;
+        $score = 0;
+        foreach ($this->rolls as $points) {
+            $score += $points;
+        }
+        return $score;
     }
 
     /**
@@ -121,7 +146,7 @@ class Game
     private function updatePrevious(int $pins): void
     {
         // If we reach frame end, we reset previous roll.
-        if (0 === $this->rollCount % self::ROLLS_PER_FRAME) {
+        if (0 === $this->rollCount % self::ROLLS_PER_FRAME || 10 === $pins) {
             $this->previousRoll = 0;
         } else {
             $this->previousRoll = $pins;
