@@ -119,7 +119,7 @@ class BowlingGameTest extends TestCase
             DomainException::class
         ];
         yield 'strike in last frame, then too many rolls' => [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0],
             DomainException::class
         ];
     }
