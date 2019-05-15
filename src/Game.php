@@ -37,6 +37,16 @@ class Game
     const MAX_ROLLS = 20;
 
     /**
+     * @var int number of additional rolls to be provided in case of strike in last game
+     */
+    const STRIKE_BONUS_ROLLS = 2;
+
+    /**
+     * @var int number of frames that the game consists of
+     */
+    const FRAMES = 10;
+
+    /**
      * @var int total score from all rolls and bonuses
      */
     private $score;
@@ -66,7 +76,10 @@ class Game
      */
     private $spareBonus;
 
-    private $bonusRolls = 0;
+    /**
+     * @var int number of additional rolls provided in case of strike or spare in the last frame
+     */
+    private $bonusRolls;
 
     /**
      * Game constructor.
@@ -81,6 +94,8 @@ class Game
         $this->strikeFirstBonus = null;
         $this->strikeSecondBonus = null;
         $this->spareBonus = null;
+
+        $this->bonusRolls = 0;
     }
 
     /**
@@ -95,13 +110,14 @@ class Game
     {
         $this->validateRoll($pins);
 
+        // We don't count bonus rolls as regular points.
         if (0 === $this->bonusRolls) {
             $this->rolls[] = $pins;
         } else {
             $this->bonusRolls--;
         }
 
-        // This must be run before checking for new strikes or spares
+        // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
 
         if ($this->isStrike($pins)) {
@@ -228,8 +244,8 @@ class Game
     private function strike(): void
     {
         $this->strikeFirstBonus = $this->getLastRollIndex();
-        if (10 === (int)ceil($this->getRollCount() / self::ROLLS_PER_FRAME) && 0 === $this->bonusRolls) {
-            $this->bonusRolls = 2;
+        if ($this->isLastFrame() && 0 === $this->bonusRolls) {
+            $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
     }
 
@@ -261,5 +277,15 @@ class Game
     private function isFirstRollInFrame(): bool
     {
         return 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME;
+    }
+
+    /**
+     * Checks whether current frame is the last in the game.
+     *
+     * @return bool true if this is the last frame of the game
+     */
+    private function isLastFrame(): bool
+    {
+        return self::FRAMES === (int)ceil($this->getRollCount() / self::ROLLS_PER_FRAME);
     }
 }
