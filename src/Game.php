@@ -96,6 +96,8 @@ class Game
      */
     private $rollCounter;
 
+    private $frames = [];
+
     /**
      * Game constructor.
      */
@@ -114,6 +116,10 @@ class Game
 
         $this->currentFrame = 1;
         $this->rollCounter = 0;
+
+        for ($i = 0; $i < 10; $i++) {
+            $frames[] = new Frame();
+        }
     }
 
     /**
@@ -206,7 +212,6 @@ class Game
         if ($this->currentFrame > self::FRAMES) {
             throw new DomainException();
         }
-//        $this->rolls[] = $pins;
         $this->rolls[] = new Roll($pins);
         $this->updateRollCounter();
 
