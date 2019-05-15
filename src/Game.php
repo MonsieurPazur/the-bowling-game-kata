@@ -29,23 +29,32 @@ class Game
     /**
      * @var int total score from all rolls and bonuses
      */
-    private $score = 0;
+    private $score;
 
-    private $previous = 0;
+    /**
+     * @var int value (pins knocked down) of previous roll
+     */
+    private $previous;
+
+    public function __construct()
+    {
+        $this->score = 0;
+        $this->previous = 0;
+    }
 
     /**
      * Method for rolling ball and knocking down pins.
      *
      * @param int $pins number of knocked down pins
+     *
+     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function roll(int $pins): void
     {
         $this->validateRoll($pins);
         $this->score += $pins;
 
-        if ($pins + $this->previous > 10) {
-            throw new DomainException();
-        }
         $this->previous = $pins;
     }
 
@@ -63,6 +72,9 @@ class Game
      * Checks whether correct number of pins were knocked down.
      *
      * @param int $pins number of knocked down pins
+     *
+     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     private function validateRoll(int $pins): void
     {
@@ -71,6 +83,9 @@ class Game
         }
         if ($pins > self::MAX_PINS) {
             throw new InvalidArgumentException();
+        }
+        if ($pins + $this->previous > self::MAX_PINS) {
+            throw new DomainException();
         }
     }
 }
