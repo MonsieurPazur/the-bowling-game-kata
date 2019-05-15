@@ -16,14 +16,16 @@ class Game
     /**
      * Method for rolling ball and knocking down pins.
      */
-    public function roll()
+    public function roll(): void
     {
     }
 
     /**
-     * @return int
+     * Gets current score from all rolls.
+     *
+     * @return int total game score
      */
-    public function score()
+    public function score(): int
     {
         return 0;
     }
