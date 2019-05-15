@@ -27,6 +27,11 @@ class Game
     const MAX_PINS = 10;
 
     /**
+     * @var int number of rolls per frame
+     */
+    const ROLLS_PER_FRAME = 2;
+
+    /**
      * @var int total score from all rolls and bonuses
      */
     private $score;
@@ -34,14 +39,21 @@ class Game
     /**
      * @var int value (pins knocked down) of previous roll
      */
-    private $previous;
+    private $previousRoll;
 
-    private $rollCount = 0;
+    /**
+     * @var int number of rolls made
+     */
+    private $rollCount;
 
+    /**
+     * Game constructor.
+     */
     public function __construct()
     {
         $this->score = 0;
-        $this->previous = 0;
+        $this->previousRoll = 0;
+        $this->rollCount = 0;
     }
 
     /**
@@ -56,13 +68,9 @@ class Game
     {
         $this->validateRoll($pins);
         $this->score += $pins;
-        $this->rollCount++;
 
-        if ($this->rollCount % 2 === 0) {
-            $this->previous = 0;
-        } else {
-            $this->previous = $pins;
-        }
+        $this->rollCount++;
+        $this->updatePrevious($pins);
     }
 
     /**
@@ -91,8 +99,23 @@ class Game
         if ($pins > self::MAX_PINS) {
             throw new InvalidArgumentException();
         }
-        if ($pins + $this->previous > self::MAX_PINS) {
+        if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
+        }
+    }
+
+    /**
+     * Updates previous roll's knocked down pins.
+     *
+     * @param int $pins pins knocked down in current roll to be updated
+     */
+    private function updatePrevious(int $pins): void
+    {
+        // If we reach frame end, we reset previous roll.
+        if (0 === $this->rollCount % self::ROLLS_PER_FRAME) {
+            $this->previousRoll = 0;
+        } else {
+            $this->previousRoll = $pins;
         }
     }
 }
