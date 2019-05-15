@@ -56,5 +56,8 @@ class Game
         if ($pins < self::MIN_PINS) {
             throw new InvalidArgumentException();
         }
+        if ($pins > 10) {
+            throw new InvalidArgumentException();
+        }
     }
 }
