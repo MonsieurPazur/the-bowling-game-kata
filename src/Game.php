@@ -61,6 +61,8 @@ class Game
      */
     private $strikeSecondBonus;
 
+    private $spareBonus = null;
+
     /**
      * Game constructor.
      */
@@ -89,6 +91,10 @@ class Game
 
         $this->rolls[] = $pins;
 
+        if (!is_null($this->spareBonus)) {
+            $this->rolls[$this->spareBonus] += $pins;
+            $this->spareBonus = null;
+        }
         $this->updateStrikes($pins);
         $this->updatePrevious($pins);
     }
@@ -158,16 +164,18 @@ class Game
      */
     private function updatePrevious(int $pins): void
     {
+        if (self::MAX_PINS === $pins && 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME) {
+            // If there was strike, we store this roll's index.
+            $this->strikeFirstBonus = $this->getLastRollIndex();
+        } elseif (self::MAX_PINS === $pins + $this->previousRoll) {
+            $this->spareBonus = $this->getLastRollIndex();
+        }
+
         // If we reach frame end, we reset previous roll.
         if (0 === $this->getRollCount() % self::ROLLS_PER_FRAME || 10 === $pins) {
             $this->previousRoll = 0;
         } else {
             $this->previousRoll = $pins;
-        }
-
-        // If there was strike, we store this roll's index.
-        if (self::MAX_PINS === $pins) {
-            $this->strikeFirstBonus = $this->getLastRollIndex();
         }
     }
 
