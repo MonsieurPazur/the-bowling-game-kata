@@ -14,13 +14,14 @@ namespace App;
 class Game
 {
     /**
-     * @var int
+     * @var int total score from all rolls and bonuses
      */
     private $score = 0;
 
     /**
      * Method for rolling ball and knocking down pins.
-     * @param int $pins
+     *
+     * @param int $pins number of knocked down pins
      */
     public function roll(int $pins): void
     {
