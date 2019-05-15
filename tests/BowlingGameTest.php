@@ -83,5 +83,6 @@ class BowlingGameTest extends TestCase
     {
         yield 'negative' => [[-1], InvalidArgumentException::class];
         yield 'over ten' => [[11], InvalidArgumentException::class];
+        yield 'over ten in frame' => [[7, 7], DomainException::class];
     }
 }
