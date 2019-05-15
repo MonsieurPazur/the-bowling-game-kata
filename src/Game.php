@@ -32,6 +32,11 @@ class Game
     const ROLLS_PER_FRAME = 2;
 
     /**
+     * @var int maximum number of rolls within a game
+     */
+    const MAX_ROLLS = 20;
+
+    /**
      * @var int total score from all rolls and bonuses
      */
     private $score;
@@ -85,6 +90,7 @@ class Game
 
     /**
      * Checks whether correct number of pins were knocked down.
+     * Also checks if we can roll further.
      *
      * @param int $pins number of knocked down pins
      *
@@ -102,7 +108,7 @@ class Game
         if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
         }
-        if (20 === $this->rollCount) {
+        if (self::MAX_ROLLS === $this->rollCount) {
             throw new DomainException();
         }
     }
