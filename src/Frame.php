@@ -14,6 +14,10 @@ class Frame
 {
     private $last;
 
+    private $rolls = 0;
+
+    private $maxRolls = 2;
+
     /**
      * Frame constructor.
      * @param $last
@@ -21,6 +25,9 @@ class Frame
     public function __construct($last)
     {
         $this->last = $last;
+        if ($this->last) {
+            $this->maxRolls = 3;
+        }
     }
 
     /**
@@ -31,5 +38,18 @@ class Frame
     public function isLast(): bool
     {
         return $this->last;
+    }
+
+    public function addRoll(): void
+    {
+        $this->rolls++;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canRoll(): bool
+    {
+        return $this->rolls <= $this->maxRolls;
     }
 }
