@@ -12,22 +12,40 @@ namespace App;
  */
 class Frame
 {
+    /**
+     * @var int how many rolls can be made within regular frame
+     */
+    const MAX_ROLLS = 2;
+
+    /**
+     * @var int how many rolls can be made within last frame
+     */
+    const MAX_ROLLS_LAST = 3;
+
+    /**
+     * @var bool true if this frame is the last one in the game
+     */
     private $last;
 
-    private $rolls = 0;
+    /**
+     * @var int how many rolls have already been made within this frame
+     */
+    private $rolls;
 
-    private $maxRolls = 2;
+    /**
+     * @var int how many rolls can be made within this frame
+     */
+    private $maxRolls;
 
     /**
      * Frame constructor.
-     * @param $last
+     *
+     * @param bool $last tells if this frame is the last one in the game
      */
-    public function __construct($last)
+    public function __construct(bool $last)
     {
         $this->last = $last;
-        if ($this->last) {
-            $this->maxRolls = 3;
-        }
+        $this->maxRolls = $last ? self::MAX_ROLLS_LAST : self::MAX_ROLLS;
     }
 
     /**
@@ -40,13 +58,18 @@ class Frame
         return $this->last;
     }
 
+    /**
+     * Increments number of rolls made within this frame.
+     */
     public function addRoll(): void
     {
         $this->rolls++;
     }
 
     /**
-     * @return bool
+     * Checks whether we can roll within this frame.
+     *
+     * @return bool true if we can roll within this frame
      */
     public function canRoll(): bool
     {

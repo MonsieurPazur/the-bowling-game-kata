@@ -87,7 +87,7 @@ class Game
     private $bonusRolls;
 
     /**
-     * @var int current frame of game being played
+     * @var int index of the current frame
      */
     private $currentFrame;
 
@@ -100,11 +100,6 @@ class Game
      * @var array collection of Frame objects
      */
     private $frames;
-
-    /**
-     * @var Frame currently played frame
-     */
-    private $frame;
 
     /**
      * Game constructor.
@@ -145,7 +140,7 @@ class Game
         } else {
             $this->regularRoll($pins);
         }
-        $this->frame->addRoll();
+        $this->getCurrentFrame()->addRoll();
     }
 
     /**
@@ -216,12 +211,10 @@ class Game
      */
     private function regularRoll(int $pins): void
     {
-        if (!$this->frame->canRoll()) {
+        if (!$this->getCurrentFrame()->canRoll()) {
             throw new DomainException();
         }
-        if ($this->currentFrame > self::FRAMES) {
-            throw new DomainException();
-        }
+
         $this->rolls[] = new Roll($pins);
         $this->updateRollCounter();
 
@@ -271,11 +264,9 @@ class Game
         if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
 
-            if (isset($this->frames[$this->currentFrame])) {
-                $this->frame = $this->frames[$this->currentFrame];
+            if (!$this->getCurrentFrame()->isLast()) {
+                $this->nextFrame();
             }
-
-            $this->currentFrame++;
         } else {
             $this->previousRoll = $pins;
         }
@@ -365,7 +356,7 @@ class Game
      */
     private function isLastFrame(): bool
     {
-        return $this->frame->isLast();
+        return $this->getCurrentFrame()->isLast();
     }
 
     /**
@@ -390,6 +381,19 @@ class Game
 
         // Last frame is different
         $this->frames[] = new Frame(true);
-        $this->frame = $this->frames[0];
+        $this->currentFrame = 0;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getCurrentFrame()
+    {
+        return $this->frames[$this->currentFrame];
+    }
+
+    private function nextFrame()
+    {
+        $this->currentFrame++;
     }
 }
