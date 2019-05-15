@@ -47,16 +47,19 @@ class Game
     private $previousRoll;
 
     /**
-     * @var int number of rolls made
+     * @var array keeps track of scores in specific rolls (including bonus points)
      */
-    private $rollCount;
+    private $rolls;
 
-    private $rolls = [];
+    /**
+     * @var int|null index of a roll to which we apply first bonus points from strike
+     */
+    private $strikeFirstBonus;
 
-    private $strikes = [
-        '1' => null,
-        '2' => null
-    ];
+    /**
+     * @var int|null index of a roll to which we apply second bonus points from strike
+     */
+    private $strikeSecondBonus;
 
     /**
      * Game constructor.
@@ -65,7 +68,11 @@ class Game
     {
         $this->score = 0;
         $this->previousRoll = 0;
-        $this->rollCount = 0;
+
+        $this->rolls = [];
+
+        $this->strikeFirstBonus = null;
+        $this->strikeSecondBonus = null;
     }
 
     /**
@@ -79,23 +86,10 @@ class Game
     public function roll(int $pins): void
     {
         $this->validateRoll($pins);
-        $this->score += $pins;
-
 
         $this->rolls[] = $pins;
-        if (!is_null($this->strikes['1'])) {
-            $this->rolls[$this->strikes['1']] += $pins;
-            $this->strikes['1'] = null;
-        }
-        if (!is_null($this->strikes['2'])) {
-            $this->rolls[$this->strikes['2']] += $pins;
-            $this->strikes['1'] = $this->strikes['2'];
-            $this->strikes['2'] = null;
-        }
-        if (10 === $pins) {
-            $this->strikes['2'] = array_keys($this->rolls)[count($this->rolls) - 1];
-        }
-        $this->rollCount++;
+
+        $this->updateStrikes($pins);
         $this->updatePrevious($pins);
     }
 
@@ -133,8 +127,27 @@ class Game
         if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
         }
-        if (self::MAX_ROLLS === $this->rollCount) {
+        if (self::MAX_ROLLS === $this->getRollCount()) {
             throw new DomainException();
+        }
+    }
+
+    /**
+     * Keeps track of past rolls and updates their score if there happened to be a strike.
+     * We need to keep track of two rolls for bonus points.
+     *
+     * @param int $pins number of points from knocked down pins to add to previous rolls
+     */
+    private function updateStrikes(int $pins): void
+    {
+        if (!is_null($this->strikeSecondBonus)) {
+            $this->rolls[$this->strikeSecondBonus] += $pins;
+            $this->strikeSecondBonus = null;
+        }
+        if (!is_null($this->strikeFirstBonus)) {
+            $this->rolls[$this->strikeFirstBonus] += $pins;
+            $this->strikeSecondBonus= $this->strikeFirstBonus;
+            $this->strikeFirstBonus = null;
         }
     }
 
@@ -146,10 +159,35 @@ class Game
     private function updatePrevious(int $pins): void
     {
         // If we reach frame end, we reset previous roll.
-        if (0 === $this->rollCount % self::ROLLS_PER_FRAME || 10 === $pins) {
+        if (0 === $this->getRollCount() % self::ROLLS_PER_FRAME || 10 === $pins) {
             $this->previousRoll = 0;
         } else {
             $this->previousRoll = $pins;
         }
+
+        // If there was strike, we store this roll's index.
+        if (self::MAX_PINS === $pins) {
+            $this->strikeFirstBonus = $this->getLastRollIndex();
+        }
+    }
+
+    /**
+     * Helper method for getting number of rolls made so far.
+     *
+     * @return int rolls made so far
+     */
+    private function getRollCount(): int
+    {
+        return count($this->rolls);
+    }
+
+    /**
+     * Helper method for getting index of the last made roll.
+     *
+     * @return int index of last made roll
+     */
+    private function getLastRollIndex(): int
+    {
+        return array_keys($this->rolls)[count($this->rolls) - 1];
     }
 }
