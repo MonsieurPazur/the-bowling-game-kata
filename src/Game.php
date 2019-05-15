@@ -102,7 +102,7 @@ class Game
     private $frames;
 
     /**
-     * @var Frame
+     * @var Frame currently played frame
      */
     private $frame;
 
@@ -266,10 +266,12 @@ class Game
         // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
         if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
-            $this->currentFrame++;
-            if (isset($this->frames[$this->currentFrame - 1])) {
-                $this->frame = $this->frames[$this->currentFrame - 1];
+
+            if (isset($this->frames[$this->currentFrame])) {
+                $this->frame = $this->frames[$this->currentFrame];
             }
+
+            $this->currentFrame++;
         } else {
             $this->previousRoll = $pins;
         }
@@ -381,6 +383,8 @@ class Game
         for ($i = 0; $i < self::FRAMES - 1; $i++) {
             $this->frames[] = new Frame(false);
         }
+
+        // Last frame is different
         $this->frames[] = new Frame(true);
         $this->frame = $this->frames[0];
     }

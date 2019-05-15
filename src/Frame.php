@@ -24,7 +24,9 @@ class Frame
     }
 
     /**
-     * @return bool
+     * Checks whether this is the last frame in the game.
+     *
+     * @return bool true if this frame is the last in the game
      */
     public function isLast(): bool
     {
