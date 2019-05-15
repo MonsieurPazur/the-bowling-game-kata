@@ -143,8 +143,8 @@ class Game
     public function score(): int
     {
         $score = 0;
-        foreach ($this->rolls as $points) {
-            $score += $points;
+        foreach ($this->rolls as $roll) {
+            $score += $roll->getPoints();
         }
         return $score;
     }
@@ -206,7 +206,8 @@ class Game
         if ($this->currentFrame > self::FRAMES) {
             throw new DomainException();
         }
-        $this->rolls[] = $pins;
+//        $this->rolls[] = $pins;
+        $this->rolls[] = new Roll($pins);
         $this->updateRollCounter();
 
         // This must be run before checking for new strikes or spares.
@@ -229,15 +230,15 @@ class Game
     private function updateBonusPoints(int $pins): void
     {
         if (!is_null($this->spareBonus)) {
-            $this->rolls[$this->spareBonus] += $pins;
+            $this->rolls[$this->spareBonus]->addPoints($pins);
             $this->spareBonus = null;
         }
         if (!is_null($this->strikeSecondBonus)) {
-            $this->rolls[$this->strikeSecondBonus] += $pins;
+            $this->rolls[$this->strikeSecondBonus]->addPoints($pins);
             $this->strikeSecondBonus = null;
         }
         if (!is_null($this->strikeFirstBonus)) {
-            $this->rolls[$this->strikeFirstBonus] += $pins;
+            $this->rolls[$this->strikeFirstBonus]->addPoints($pins);
             $this->strikeSecondBonus= $this->strikeFirstBonus;
             $this->strikeFirstBonus = null;
         }
