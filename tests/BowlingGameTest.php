@@ -72,6 +72,7 @@ class BowlingGameTest extends TestCase
     {
         yield 'single zero' => [[0], 0];
         yield 'single one' => [[1], 1];
+        yield 'high rolls across frames' => [[1, 7, 8], 16];
     }
 
     /**
