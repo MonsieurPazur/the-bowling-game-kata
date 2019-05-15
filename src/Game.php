@@ -145,6 +145,7 @@ class Game
         } else {
             $this->regularRoll($pins);
         }
+        $this->frame->addRoll();
     }
 
     /**
@@ -215,6 +216,9 @@ class Game
      */
     private function regularRoll(int $pins): void
     {
+        if (!$this->frame->canRoll()) {
+            throw new DomainException();
+        }
         if ($this->currentFrame > self::FRAMES) {
             throw new DomainException();
         }
