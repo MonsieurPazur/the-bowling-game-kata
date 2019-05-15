@@ -14,10 +14,17 @@ namespace App;
 class Game
 {
     /**
-     * Method for rolling ball and knocking down pins.
+     * @var int
      */
-    public function roll(): void
+    private $score = 0;
+
+    /**
+     * Method for rolling ball and knocking down pins.
+     * @param int $pins
+     */
+    public function roll(int $pins): void
     {
+        $this->score += $pins;
     }
 
     /**
@@ -27,6 +34,6 @@ class Game
      */
     public function score(): int
     {
-        return 0;
+        return $this->score;
     }
 }
