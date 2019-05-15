@@ -70,14 +70,38 @@ class BowlingGameTest extends TestCase
      */
     public function rollProvider()
     {
-        yield 'single zero' => [[0], 0];
-        yield 'single one' => [[1], 1];
-        yield 'high rolls across frames' => [[1, 7, 8], 16];
-        yield 'strike in first frame' => [[10, 3, 4], 24];
-        yield 'spare in first frame' => [[9, 1, 4], 18];
-        yield 'spare with ten pins' => [[0, 10, 4, 5], 23];
-        yield 'three strikes in a row' => [[10, 10, 10], 60];
-        yield 'spare, then strike' => [[5, 5, 10, 6, 3], 48];
+        yield 'single zero' => [
+            [0],
+            0
+        ];
+        yield 'single one' => [
+            [1],
+            1
+        ];
+        yield 'high rolls across frames' => [
+            [1, 7, 8],
+            16
+        ];
+        yield 'strike in first frame' => [
+            [10, 3, 4],
+            24
+        ];
+        yield 'spare in first frame' => [
+            [9, 1, 4],
+            18
+        ];
+        yield 'spare with ten pins' => [
+            [0, 10, 4, 5],
+            23
+        ];
+        yield 'three strikes in a row' => [
+            [10, 10, 10],
+            60
+        ];
+        yield 'spare, then strike' => [
+            [5, 5, 10, 6, 3],
+            48
+        ];
         yield 'strike, then all gutter' => [
             [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             10
@@ -115,9 +139,18 @@ class BowlingGameTest extends TestCase
      */
     public function invalidRollProvider()
     {
-        yield 'negative' => [[-1], InvalidArgumentException::class];
-        yield 'over ten' => [[11], InvalidArgumentException::class];
-        yield 'over ten in frame' => [[7, 7], DomainException::class];
+        yield 'negative' => [
+            [-1],
+            InvalidArgumentException::class
+        ];
+        yield 'over ten' => [
+            [11],
+            InvalidArgumentException::class
+        ];
+        yield 'over ten in frame' => [
+            [7, 7],
+            DomainException::class
+        ];
         yield 'too many rolls' => [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             DomainException::class

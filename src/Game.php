@@ -169,7 +169,7 @@ class Game
         if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
         }
-        if (self::MAX_ROLLS === $this->getRollCount() && 0 === $this->bonusRolls) {
+        if (self::MAX_ROLLS === $this->getRollCount() && !$this->isBonusRoll()) {
             throw new DomainException();
         }
     }
@@ -206,13 +206,8 @@ class Game
         if ($this->currentFrame > self::FRAMES) {
             throw new DomainException();
         }
-
-        if (0 === $this->rollCounter % self::ROLLS_PER_FRAME) {
-            $this->rollCounter = 0;
-        }
-        $this->rollCounter++;
-
         $this->rolls[] = $pins;
+        $this->updateRollCounter();
 
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
@@ -350,5 +345,16 @@ class Game
     private function isLastFrame(): bool
     {
         return self::FRAMES === $this->currentFrame;
+    }
+
+    /**
+     *  Updates counter that determines if this is the first or second roll in a frame.
+     */
+    private function updateRollCounter(): void
+    {
+        if (0 === $this->rollCounter % self::ROLLS_PER_FRAME) {
+            $this->rollCounter = 0;
+        }
+        $this->rollCounter++;
     }
 }
