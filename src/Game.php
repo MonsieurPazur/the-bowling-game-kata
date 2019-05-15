@@ -81,9 +81,15 @@ class Game
      */
     private $bonusRolls;
 
-    private $currentFrame = 1;
+    /**
+     * @var int current frame of game being played
+     */
+    private $currentFrame;
 
-    private $rollCounter = 0;
+    /**
+     * @var int counting rolls towards next frame
+     */
+    private $rollCounter;
 
     /**
      * Game constructor.
@@ -100,6 +106,9 @@ class Game
         $this->spareBonus = null;
 
         $this->bonusRolls = 0;
+
+        $this->currentFrame = 1;
+        $this->rollCounter = 0;
     }
 
     /**
@@ -192,10 +201,12 @@ class Game
         if ($this->currentFrame > self::FRAMES) {
             throw new DomainException();
         }
-        if (0 === $this->rollCounter % 2) {
+
+        if (0 === $this->rollCounter % self::ROLLS_PER_FRAME) {
             $this->rollCounter = 0;
         }
         $this->rollCounter++;
+
         $this->rolls[] = $pins;
 
         // This must be run before checking for new strikes or spares.
@@ -321,7 +332,6 @@ class Game
     private function isFirstRollInFrame(): bool
     {
         return $this->rollCounter === 1;
-//        return 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME;
     }
 
     /**
