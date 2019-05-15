@@ -7,6 +7,7 @@
 namespace Test;
 
 use App\Game;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,5 +27,12 @@ class BowlingGameTest extends TestCase
 
         $game->roll(1);
         $this->assertEquals(1, $game->score());
+    }
+
+    public function testInvalidRoll()
+    {
+        $game = new Game();
+        $this->expectException(InvalidArgumentException::class);
+        $game->roll(-1);
     }
 }
