@@ -42,6 +42,11 @@ class Game
     const STRIKE_BONUS_ROLLS = 2;
 
     /**
+     * @var int number of additional rolls to be provided in case of spare in last frame
+     */
+    const SPARE_BONUS_ROLLS = 1;
+
+    /**
      * @var int number of frames that the game consists of
      */
     const FRAMES = 10;
@@ -322,6 +327,9 @@ class Game
     private function spare(): void
     {
         $this->spareBonus = $this->getLastRollIndex();
+        if ($this->isLastFrame() && 0 === $this->bonusRolls) {
+            $this->bonusRolls = self::SPARE_BONUS_ROLLS;
+        }
     }
 
     /**
