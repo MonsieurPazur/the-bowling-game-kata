@@ -102,6 +102,9 @@ class Game
         if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
         }
+        if (20 === $this->rollCount) {
+            throw new DomainException();
+        }
     }
 
     /**
