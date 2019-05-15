@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * This class is the elementary thing that happens during game.
+ * Keeps track of points.
+ */
+
 namespace App;
 
 /**
@@ -8,26 +13,37 @@ namespace App;
  */
 class Roll
 {
-    private $points = 0;
+    /**
+     * @var int amount of points (from knocked down pins and bonus points)
+     */
+    private $points;
 
     /**
      * Roll constructor.
-     * @param $pins
+     *
+     * @param int $pins pins knocked down by this roll
      */
-    public function __construct($pins)
+    public function __construct(int $pins)
     {
         $this->points = $pins;
     }
 
     /**
-     * @param $points
+     * Adds bonus points from strikes and spares
+     *
+     * @param int $points amount of bonus points
      */
-    public function addPoints($points)
+    public function addPoints(int $points): void
     {
         $this->points += $points;
     }
 
-    public function getPoints()
+    /**
+     * Gets current amount of points from this roll
+     *
+     * @return int amount of points
+     */
+    public function getPoints(): int
     {
         return $this->points;
     }
