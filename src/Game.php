@@ -349,6 +349,6 @@ class Game
      */
     private function isLastFrame(): bool
     {
-        return self::FRAMES === (int)ceil($this->getRollCount() / self::ROLLS_PER_FRAME);
+        return self::FRAMES === $this->currentFrame;
     }
 }
