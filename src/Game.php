@@ -7,6 +7,7 @@
 
 namespace App;
 
+use DomainException;
 use InvalidArgumentException;
 
 /**
@@ -30,6 +31,8 @@ class Game
      */
     private $score = 0;
 
+    private $previous = 0;
+
     /**
      * Method for rolling ball and knocking down pins.
      *
@@ -39,6 +42,11 @@ class Game
     {
         $this->validateRoll($pins);
         $this->score += $pins;
+
+        if ($pins + $this->previous > 10) {
+            throw new DomainException();
+        }
+        $this->previous = $pins;
     }
 
     /**
