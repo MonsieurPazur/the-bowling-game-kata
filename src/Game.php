@@ -92,11 +92,6 @@ class Game
     private $currentFrame;
 
     /**
-     * @var int counting rolls towards next frame
-     */
-    private $rollCounter;
-
-    /**
      * @var array collection of Frame objects
      */
     private $frames;
@@ -117,9 +112,6 @@ class Game
 
         $this->bonusRolls = 0;
 
-        $this->currentFrame = 1;
-        $this->rollCounter = 0;
-
         $this->initFrames();
     }
 
@@ -134,13 +126,13 @@ class Game
     public function roll(int $pins): void
     {
         $this->validateRoll($pins);
+        $this->getCurrentFrame()->addRoll();
 
         if ($this->isBonusRoll()) {
             $this->bonusRoll($pins);
         } else {
             $this->regularRoll($pins);
         }
-        $this->getCurrentFrame()->addRoll();
     }
 
     /**
@@ -216,7 +208,6 @@ class Game
         }
 
         $this->rolls[] = new Roll($pins);
-        $this->updateRollCounter();
 
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
@@ -313,7 +304,6 @@ class Game
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
-        $this->rollCounter = 0;
     }
 
     /**
@@ -346,7 +336,7 @@ class Game
      */
     private function isFirstRollInFrame(): bool
     {
-        return $this->rollCounter === 1;
+        return $this->getCurrentFrame()->isFirstRoll();
     }
 
     /**
@@ -357,17 +347,6 @@ class Game
     private function isLastFrame(): bool
     {
         return $this->getCurrentFrame()->isLast();
-    }
-
-    /**
-     *  Updates counter that determines if this is the first or second roll in a frame.
-     */
-    private function updateRollCounter(): void
-    {
-        if (0 === $this->rollCounter % self::ROLLS_PER_FRAME) {
-            $this->rollCounter = 0;
-        }
-        $this->rollCounter++;
     }
 
     /**
@@ -385,14 +364,19 @@ class Game
     }
 
     /**
-     * @return mixed
+     * Gets frame, that's currently being played.
+     *
+     * @return Frame currently played frame
      */
-    private function getCurrentFrame()
+    private function getCurrentFrame(): Frame
     {
         return $this->frames[$this->currentFrame];
     }
 
-    private function nextFrame()
+    /**
+     * Increments current frame reference.
+     */
+    private function nextFrame(): void
     {
         $this->currentFrame++;
     }

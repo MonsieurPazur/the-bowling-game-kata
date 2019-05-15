@@ -75,4 +75,14 @@ class Frame
     {
         return $this->rolls <= $this->maxRolls;
     }
+
+    /**
+     * Checks whether there was only one roll in this frame.
+     *
+     * @return bool true if there was only one roll
+     */
+    public function isFirstRoll(): bool
+    {
+        return 1 === $this->rolls;
+    }
 }
