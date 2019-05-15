@@ -120,10 +120,12 @@ class Game
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
 
-        if ($this->isStrike($pins)) {
-            $this->strike();
-        } elseif ($this->isSpare($pins)) {
-            $this->spare();
+        if (0 === $this->bonusRolls) {
+            if ($this->isStrike($pins)) {
+                $this->strike();
+            } elseif ($this->isSpare($pins)) {
+                $this->spare();
+            }
         }
         $this->updatePrevious($pins);
     }
