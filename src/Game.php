@@ -96,7 +96,10 @@ class Game
      */
     private $rollCounter;
 
-    private $frames = [];
+    /**
+     * @var array collection of Frame objects
+     */
+    private $frames;
 
     /**
      * Game constructor.
@@ -117,9 +120,7 @@ class Game
         $this->currentFrame = 1;
         $this->rollCounter = 0;
 
-        for ($i = 0; $i < 10; $i++) {
-            $frames[] = new Frame();
-        }
+        $this->initFrames();
     }
 
     /**
@@ -362,5 +363,15 @@ class Game
             $this->rollCounter = 0;
         }
         $this->rollCounter++;
+    }
+
+    /**
+     * Initializes fixed amount of frames that will be played during game.
+     */
+    private function initFrames(): void
+    {
+        for ($i = 0; $i < self::FRAMES; $i++) {
+            $this->frames[] = new Frame();
+        }
     }
 }
