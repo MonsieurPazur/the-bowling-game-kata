@@ -37,7 +37,7 @@ class Game
     const MAX_ROLLS = 20;
 
     /**
-     * @var int number of additional rolls to be provided in case of strike in last game
+     * @var int number of additional rolls to be provided in case of strike in last frame
      */
     const STRIKE_BONUS_ROLLS = 2;
 
@@ -303,7 +303,7 @@ class Game
     private function strike(): void
     {
         $this->strikeFirstBonus = $this->getLastRollIndex();
-        if ($this->isLastFrame() && 0 === $this->bonusRolls) {
+        if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
         $this->rollCounter = 0;
@@ -327,7 +327,7 @@ class Game
     private function spare(): void
     {
         $this->spareBonus = $this->getLastRollIndex();
-        if ($this->isLastFrame() && 0 === $this->bonusRolls) {
+        if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->bonusRolls = self::SPARE_BONUS_ROLLS;
         }
     }
