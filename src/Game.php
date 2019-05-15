@@ -7,6 +7,8 @@
 
 namespace App;
 
+use InvalidArgumentException;
+
 /**
  * Class Game
  * @package App
@@ -25,6 +27,9 @@ class Game
      */
     public function roll(int $pins): void
     {
+        if ($pins < 0) {
+            throw new InvalidArgumentException();
+        }
         $this->score += $pins;
     }
 
