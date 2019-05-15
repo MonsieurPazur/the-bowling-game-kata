@@ -7,6 +7,7 @@
 namespace Test;
 
 use App\Game;
+use DomainException;
 use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -77,5 +78,6 @@ class BowlingGameTest extends TestCase
     public function invalidRollProvider()
     {
         yield 'negative' => [-1, InvalidArgumentException::class];
+        yield 'over ten' => [11, InvalidArgumentException::class];
     }
 }
