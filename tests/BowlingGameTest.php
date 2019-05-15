@@ -75,6 +75,11 @@ class BowlingGameTest extends TestCase
         yield 'high rolls across frames' => [[1, 7, 8], 16];
         yield 'strike in first frame' => [[10, 3, 4], 24];
         yield 'spare in first frame' => [[9, 1, 4], 18];
+        yield 'spare with ten pins' => [[0, 10, 4, 5], 23];
+        yield 'three strikes in a row' => [[10, 10, 10], 60];
+        yield 'spare, then strike' => [[5, 5, 10, 6, 7], 56];
+        yield 'strike, then all gutter' => [[10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 10];
+        yield 'stike in last frame' => [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 5, 4], 19];
     }
 
     /**
@@ -89,6 +94,10 @@ class BowlingGameTest extends TestCase
         yield 'over ten in frame' => [[7, 7], DomainException::class];
         yield 'too many rolls' => [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            DomainException::class
+        ];
+        yield 'strike, then too many rolls' => [
+            [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             DomainException::class
         ];
     }
