@@ -13,6 +13,9 @@ namespace App;
  */
 class Game
 {
+    /**
+     * Method for rolling ball and knocking down pins.
+     */
     public function roll()
     {
     }
