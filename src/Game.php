@@ -81,6 +81,10 @@ class Game
      */
     private $bonusRolls;
 
+    private $currentFrame = 1;
+
+    private $rollCounter = 0;
+
     /**
      * Game constructor.
      */
@@ -185,6 +189,13 @@ class Game
      */
     private function regularRoll(int $pins): void
     {
+        if ($this->currentFrame > self::FRAMES) {
+            throw new DomainException();
+        }
+        if (0 === $this->rollCounter % 2) {
+            $this->rollCounter = 0;
+        }
+        $this->rollCounter++;
         $this->rolls[] = $pins;
 
         // This must be run before checking for new strikes or spares.
@@ -232,6 +243,7 @@ class Game
         // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
         if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
+            $this->currentFrame++;
         } else {
             $this->previousRoll = $pins;
         }
@@ -278,6 +290,7 @@ class Game
         if ($this->isLastFrame() && 0 === $this->bonusRolls) {
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
+        $this->rollCounter = 0;
     }
 
     /**
@@ -307,7 +320,8 @@ class Game
      */
     private function isFirstRollInFrame(): bool
     {
-        return 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME;
+        return $this->rollCounter === 1;
+//        return 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME;
     }
 
     /**

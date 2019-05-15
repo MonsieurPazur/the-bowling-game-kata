@@ -77,9 +77,9 @@ class BowlingGameTest extends TestCase
         yield 'spare in first frame' => [[9, 1, 4], 18];
         yield 'spare with ten pins' => [[0, 10, 4, 5], 23];
         yield 'three strikes in a row' => [[10, 10, 10], 60];
-        yield 'spare, then strike' => [[5, 5, 10, 6, 7], 56];
+        yield 'spare, then strike' => [[5, 5, 10, 6, 3], 48];
         yield 'strike, then all gutter' => [
-            [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             10
         ];
         yield 'stike in last frame' => [
