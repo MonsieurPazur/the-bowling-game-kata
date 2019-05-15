@@ -36,6 +36,8 @@ class Game
      */
     private $previous;
 
+    private $rollCount = 0;
+
     public function __construct()
     {
         $this->score = 0;
@@ -54,8 +56,13 @@ class Game
     {
         $this->validateRoll($pins);
         $this->score += $pins;
+        $this->rollCount++;
 
-        $this->previous = $pins;
+        if ($this->rollCount % 2 === 0) {
+            $this->previous = 0;
+        } else {
+            $this->previous = $pins;
+        }
     }
 
     /**
