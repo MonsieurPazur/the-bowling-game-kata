@@ -66,6 +66,8 @@ class Game
      */
     private $spareBonus;
 
+    private $bonusRolls = 0;
+
     /**
      * Game constructor.
      */
@@ -93,7 +95,11 @@ class Game
     {
         $this->validateRoll($pins);
 
-        $this->rolls[] = $pins;
+        if (0 === $this->bonusRolls) {
+            $this->rolls[] = $pins;
+        } else {
+            $this->bonusRolls--;
+        }
 
         // This must be run before checking for new strikes or spares
         $this->updateBonusPoints($pins);
@@ -140,7 +146,7 @@ class Game
         if ($pins + $this->previousRoll > self::MAX_PINS) {
             throw new DomainException();
         }
-        if (self::MAX_ROLLS === $this->getRollCount()) {
+        if (self::MAX_ROLLS === $this->getRollCount() && 0 === $this->bonusRolls) {
             throw new DomainException();
         }
     }
@@ -222,6 +228,9 @@ class Game
     private function strike(): void
     {
         $this->strikeFirstBonus = $this->getLastRollIndex();
+        if (10 === (int)ceil($this->getRollCount() / self::ROLLS_PER_FRAME) && 0 === $this->bonusRolls) {
+            $this->bonusRolls = 2;
+        }
     }
 
     /**
