@@ -7,6 +7,7 @@
 namespace Test;
 
 use App\Game;
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -17,22 +18,64 @@ use PHPUnit\Framework\TestCase;
 class BowlingGameTest extends TestCase
 {
     /**
-     * Tests rolling.
+     * @var Game
      */
-    public function testRoll()
-    {
-        $game = new Game();
-        $game->roll(0);
-        $this->assertEquals(0, $game->score());
+    private $game;
 
-        $game->roll(1);
-        $this->assertEquals(1, $game->score());
+    /**
+     * Sets up Game object for tests.
+     */
+    public function setUp(): void
+    {
+        $this->game = new Game();
     }
 
-    public function testInvalidRoll()
+    /**
+     * Tests rolling.
+     *
+     * @dataProvider rollProvider
+     *
+     * @param int $input number of pins to knock down in a roll
+     * @param int $expected score after a roll
+     */
+    public function testRolls(int $input, int $expected)
     {
-        $game = new Game();
-        $this->expectException(InvalidArgumentException::class);
-        $game->roll(-1);
+        $this->game->roll($input);
+        $this->assertEquals($expected, $this->game->score());
+    }
+
+    /**
+     * Tests rolling with invalid/incorrect data.
+     *
+     * @dataProvider invalidRollProvider
+     *
+     * @param int $input number of pins to knock down in a roll
+     * @param string $expected exception class
+     */
+    public function testInvalidRolls(int $input, string $expected)
+    {
+        $this->expectException($expected);
+        $this->game->roll($input);
+    }
+
+    /**
+     * Data for rolls that should be correct.
+     *
+     * @return Generator
+     */
+    public function rollProvider()
+    {
+        yield 'single zero' => [0, 0];
+        yield 'single one' => [1, 1];
+    }
+
+    /**
+     * Data for invalid/incorrect rolls.
+     *
+     * @return Generator
+     */
+    public function invalidRollProvider()
+    {
+        yield 'negative' => [-1, InvalidArgumentException::class];
     }
 }

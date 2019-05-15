@@ -16,6 +16,11 @@ use InvalidArgumentException;
 class Game
 {
     /**
+     * @var int minimum number of pins that may be knocked down in a roll
+     */
+    const MIN_PINS = 0;
+
+    /**
      * @var int total score from all rolls and bonuses
      */
     private $score = 0;
@@ -27,9 +32,7 @@ class Game
      */
     public function roll(int $pins): void
     {
-        if ($pins < 0) {
-            throw new InvalidArgumentException();
-        }
+        $this->validateRoll($pins);
         $this->score += $pins;
     }
 
@@ -41,5 +44,17 @@ class Game
     public function score(): int
     {
         return $this->score;
+    }
+
+    /**
+     * Checks whether correct number of pins were knocked down.
+     *
+     * @param int $pins number of knocked down pins
+     */
+    private function validateRoll(int $pins): void
+    {
+        if ($pins < self::MIN_PINS) {
+            throw new InvalidArgumentException();
+        }
     }
 }
