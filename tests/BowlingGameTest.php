@@ -36,12 +36,14 @@ class BowlingGameTest extends TestCase
      *
      * @dataProvider rollProvider
      *
-     * @param int $input number of pins to knock down in a roll
+     * @param array $input number of pins to knock down in each roll
      * @param int $expected score after a roll
      */
-    public function testRolls(int $input, int $expected)
+    public function testRolls(array $input, int $expected)
     {
-        $this->game->roll($input);
+        foreach ($input as $pins) {
+            $this->game->roll($pins);
+        }
         $this->assertEquals($expected, $this->game->score());
     }
 
@@ -50,13 +52,15 @@ class BowlingGameTest extends TestCase
      *
      * @dataProvider invalidRollProvider
      *
-     * @param int $input number of pins to knock down in a roll
+     * @param array $input number of pins to knock down in each roll
      * @param string $expected exception class
      */
-    public function testInvalidRolls(int $input, string $expected)
+    public function testInvalidRolls(array $input, string $expected)
     {
         $this->expectException($expected);
-        $this->game->roll($input);
+        foreach ($input as $pins) {
+            $this->game->roll($pins);
+        }
     }
 
     /**
@@ -66,8 +70,8 @@ class BowlingGameTest extends TestCase
      */
     public function rollProvider()
     {
-        yield 'single zero' => [0, 0];
-        yield 'single one' => [1, 1];
+        yield 'single zero' => [[0], 0];
+        yield 'single one' => [[1], 1];
     }
 
     /**
@@ -77,7 +81,7 @@ class BowlingGameTest extends TestCase
      */
     public function invalidRollProvider()
     {
-        yield 'negative' => [-1, InvalidArgumentException::class];
-        yield 'over ten' => [11, InvalidArgumentException::class];
+        yield 'negative' => [[-1], InvalidArgumentException::class];
+        yield 'over ten' => [[11], InvalidArgumentException::class];
     }
 }

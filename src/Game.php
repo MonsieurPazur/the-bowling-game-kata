@@ -21,6 +21,11 @@ class Game
     const MIN_PINS = 0;
 
     /**
+     * @var int maximum number of pins that may be knocked down in a roll
+     */
+    const MAX_PINS = 10;
+
+    /**
      * @var int total score from all rolls and bonuses
      */
     private $score = 0;
@@ -56,7 +61,7 @@ class Game
         if ($pins < self::MIN_PINS) {
             throw new InvalidArgumentException();
         }
-        if ($pins > 10) {
+        if ($pins > self::MAX_PINS) {
             throw new InvalidArgumentException();
         }
     }
