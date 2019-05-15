@@ -110,24 +110,11 @@ class Game
     {
         $this->validateRoll($pins);
 
-        // We don't count bonus rolls as regular points.
-        if (0 === $this->bonusRolls) {
-            $this->rolls[] = $pins;
+        if ($this->isBonusRoll()) {
+            $this->bonusRoll($pins);
         } else {
-            $this->bonusRolls--;
+            $this->regularRoll($pins);
         }
-
-        // This must be run before checking for new strikes or spares.
-        $this->updateBonusPoints($pins);
-
-        if (0 === $this->bonusRolls) {
-            if ($this->isStrike($pins)) {
-                $this->strike();
-            } elseif ($this->isSpare($pins)) {
-                $this->spare();
-            }
-        }
-        $this->updatePrevious($pins);
     }
 
     /**
@@ -167,6 +154,48 @@ class Game
         if (self::MAX_ROLLS === $this->getRollCount() && 0 === $this->bonusRolls) {
             throw new DomainException();
         }
+    }
+
+    /**
+     * Checks if this roll is supplied by strike or spare in the last frame.
+     *
+     * @return bool true if this is bonus roll
+     */
+    private function isBonusRoll(): bool
+    {
+        return 0 !== $this->bonusRolls;
+    }
+
+    /**
+     * Bonus rolls are supplied by strike or spare in the last frame, and work only
+     * as bonus points providers for strike or spare.
+     *
+     * @param int $pins number of knocked down pins
+     */
+    private function bonusRoll(int $pins): void
+    {
+        $this->bonusRolls--;
+        $this->updateBonusPoints($pins);
+    }
+
+    /**
+     * Regular roll, not supplied by strike or spare in the last frame.
+     *
+     * @param int $pins number of knocked down pins
+     */
+    private function regularRoll(int $pins): void
+    {
+        $this->rolls[] = $pins;
+
+        // This must be run before checking for new strikes or spares.
+        $this->updateBonusPoints($pins);
+
+        if ($this->isStrike($pins)) {
+            $this->strike();
+        } elseif ($this->isSpare($pins)) {
+            $this->spare();
+        }
+        $this->updatePrevious($pins);
     }
 
     /**
