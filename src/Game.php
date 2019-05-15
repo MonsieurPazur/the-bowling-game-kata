@@ -267,7 +267,9 @@ class Game
         if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
             $this->currentFrame++;
-            $this->frame = $this->frames[$this->currentFrame];
+            if (isset($this->frames[$this->currentFrame - 1])) {
+                $this->frame = $this->frames[$this->currentFrame - 1];
+            }
         } else {
             $this->previousRoll = $pins;
         }

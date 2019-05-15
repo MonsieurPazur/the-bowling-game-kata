@@ -22,4 +22,12 @@ class Frame
     {
         $this->last = $last;
     }
+
+    /**
+     * @return bool
+     */
+    public function isLast(): bool
+    {
+        return $this->last;
+    }
 }
