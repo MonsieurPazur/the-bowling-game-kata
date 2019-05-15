@@ -22,6 +22,6 @@ class BowlingGameTest extends TestCase
     {
         $game = new Game();
         $game->roll();
-        $this->assertTrue(true);
+        $this->assertEquals(0, $game->score());
     }
 }
