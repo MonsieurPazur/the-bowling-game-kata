@@ -13,4 +13,7 @@ namespace App;
  */
 class Game
 {
+    public function roll()
+    {
+    }
 }
