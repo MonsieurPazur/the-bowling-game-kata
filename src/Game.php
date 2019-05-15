@@ -19,4 +19,12 @@ class Game
     public function roll()
     {
     }
+
+    /**
+     * @return int
+     */
+    public function score()
+    {
+        return 0;
+    }
 }
