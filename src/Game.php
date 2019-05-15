@@ -61,7 +61,10 @@ class Game
      */
     private $strikeSecondBonus;
 
-    private $spareBonus = null;
+    /**
+     * @var int|null index of a roll to which we apply bonus points from spare
+     */
+    private $spareBonus;
 
     /**
      * Game constructor.
@@ -75,6 +78,7 @@ class Game
 
         $this->strikeFirstBonus = null;
         $this->strikeSecondBonus = null;
+        $this->spareBonus = null;
     }
 
     /**
@@ -91,11 +95,14 @@ class Game
 
         $this->rolls[] = $pins;
 
-        if (!is_null($this->spareBonus)) {
-            $this->rolls[$this->spareBonus] += $pins;
-            $this->spareBonus = null;
+        // This must be run before checking for new strikes or spares
+        $this->updateBonusPoints($pins);
+
+        if ($this->isStrike($pins)) {
+            $this->strike();
+        } elseif ($this->isSpare($pins)) {
+            $this->spare();
         }
-        $this->updateStrikes($pins);
         $this->updatePrevious($pins);
     }
 
@@ -139,13 +146,17 @@ class Game
     }
 
     /**
-     * Keeps track of past rolls and updates their score if there happened to be a strike.
-     * We need to keep track of two rolls for bonus points.
+     * Keeps track of past rolls and updates their score if there happened to be a strike or spare.
+     * In case of strike, we need to keep track of two rolls for bonus points.
      *
      * @param int $pins number of points from knocked down pins to add to previous rolls
      */
-    private function updateStrikes(int $pins): void
+    private function updateBonusPoints(int $pins): void
     {
+        if (!is_null($this->spareBonus)) {
+            $this->rolls[$this->spareBonus] += $pins;
+            $this->spareBonus = null;
+        }
         if (!is_null($this->strikeSecondBonus)) {
             $this->rolls[$this->strikeSecondBonus] += $pins;
             $this->strikeSecondBonus = null;
@@ -164,15 +175,9 @@ class Game
      */
     private function updatePrevious(int $pins): void
     {
-        if (self::MAX_PINS === $pins && 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME) {
-            // If there was strike, we store this roll's index.
-            $this->strikeFirstBonus = $this->getLastRollIndex();
-        } elseif (self::MAX_PINS === $pins + $this->previousRoll) {
-            $this->spareBonus = $this->getLastRollIndex();
-        }
-
         // If we reach frame end, we reset previous roll.
-        if (0 === $this->getRollCount() % self::ROLLS_PER_FRAME || 10 === $pins) {
+        // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
+        if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
             $this->previousRoll = 0;
         } else {
             $this->previousRoll = $pins;
@@ -197,5 +202,55 @@ class Game
     private function getLastRollIndex(): int
     {
         return array_keys($this->rolls)[count($this->rolls) - 1];
+    }
+
+    /**
+     * Checks whether this roll was a strike.
+     *
+     * @param int $pins number of pins knocked down in this roll
+     *
+     * @return bool true if this roll was a strike
+     */
+    private function isStrike(int $pins): bool
+    {
+        return self::MAX_PINS === $pins && $this->isFirstRollInFrame();
+    }
+
+    /**
+     * Stores last made roll as a strike (for first out of two bonus point rolls).
+     */
+    private function strike(): void
+    {
+        $this->strikeFirstBonus = $this->getLastRollIndex();
+    }
+
+    /**
+     * Checks whether this roll was a spare.
+     *
+     * @param int $pins number of pins knocked down in this roll
+     *
+     * @return bool true if this roll was a spare
+     */
+    private function isSpare(int $pins): bool
+    {
+        return self::MAX_PINS === $pins + $this->previousRoll;
+    }
+
+    /**
+     * Stores last made roll as a spare.
+     */
+    private function spare(): void
+    {
+        $this->spareBonus = $this->getLastRollIndex();
+    }
+
+    /**
+     * Helper method for checking if the last roll was the first in a frame.
+     *
+     * @return bool true if the last roll was the first in a frame
+     */
+    private function isFirstRollInFrame(): bool
+    {
+        return 0 !== $this->getRollCount() % self::ROLLS_PER_FRAME;
     }
 }
