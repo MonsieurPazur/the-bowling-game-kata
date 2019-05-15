@@ -82,9 +82,17 @@ class BowlingGameTest extends TestCase
             [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             10
         ];
-        yield 'stike in last frame' => [
+        yield 'strike in last frame' => [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 5, 4],
             19
+        ];
+        yield 'spare in last frame' => [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 8],
+            18
+        ];
+        yield 'spare, then strike in last frame' => [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 10],
+            20
         ];
         yield 'two strikes in last frame' => [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 4],
