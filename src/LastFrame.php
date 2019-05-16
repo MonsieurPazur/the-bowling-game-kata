@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * This basicaly works like Frame, but with different validation logic.
+ */
+
 namespace App;
 
 /**
@@ -9,6 +13,9 @@ namespace App;
 class LastFrame extends Frame
 {
 
+    /**
+     * LastFrame constructor.
+     */
     public function __construct()
     {
         parent::__construct();
