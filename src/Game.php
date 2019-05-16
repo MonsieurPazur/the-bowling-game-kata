@@ -299,7 +299,7 @@ class Game
      */
     private function isSpare(int $pins): bool
     {
-        return $this->getCurrentFrame()->isSpare($pins);
+        return $this->getCurrentFrame()->isSpare();
     }
 
     /**

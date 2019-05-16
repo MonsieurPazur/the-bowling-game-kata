@@ -103,12 +103,25 @@ class Frame
     /**
      * Checks whether this frame had a strike.
      *
-     * @param int $pins number of pins knocked down
-     *
      * @return bool true if this frame had a strike
      */
-    public function isStrike(int $pins): bool
+    public function isStrike(): bool
     {
-        return $this->isFirstRoll() && self::MAX_PINS === $pins;
+        return $this->isFirstRoll() && self::MAX_PINS == $this->rolls[0]->getPins();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpare(): bool
+    {
+        if ($this->isStrike()) {
+            return false;
+        }
+        $pins = 0;
+        foreach ($this->rolls as $roll) {
+            $pins += $roll->getPins();
+        }
+        return self::MAX_PINS === $pins;
     }
 }

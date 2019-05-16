@@ -23,6 +23,8 @@ class Roll
      */
     private $bonus;
 
+    private $pins;
+
     /**
      * Roll constructor.
      *
@@ -31,6 +33,7 @@ class Roll
      */
     public function __construct(int $pins, bool $bonus)
     {
+        $this->pins = $pins;
         $this->bonus = $bonus;
         if ($bonus) {
             $this->points = 0;
@@ -57,5 +60,10 @@ class Roll
     public function getPoints(): int
     {
         return $this->points;
+    }
+
+    public function getPins(): int
+    {
+        return $this->pins;
     }
 }
