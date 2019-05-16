@@ -216,13 +216,16 @@ class Game
      */
     private function updateFrame(): void
     {
-        // If we reach frame end, we reset previous roll.
-        // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
-        if (!$this->isFirstRollInFrame() || $this->getCurrentFrame()->isStrike()) {
-            if (!$this->getCurrentFrame()->isLast()) {
-                $this->nextFrame();
-            }
+        if ($this->getCurrentFrame()->isDone()) {
+            $this->nextFrame();
         }
+//        // If we reach frame end, we reset previous roll.
+//        // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
+//        if (!$this->isFirstRollInFrame() || $this->getCurrentFrame()->isStrike()) {
+//            if (!$this->getCurrentFrame()->isLast()) {
+//                $this->nextFrame();
+//            }
+//        }
     }
 
     /**
