@@ -192,6 +192,7 @@ class Game
      */
     private function bonusRoll(int $pins): void
     {
+        $this->rolls[] = new Roll($pins, true);
         $this->bonusRolls--;
         $this->updateBonusPoints($pins);
     }

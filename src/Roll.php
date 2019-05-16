@@ -18,14 +18,17 @@ class Roll
      */
     private $points;
 
+    private $bonus;
+
     /**
      * Roll constructor.
      *
      * @param int $pins pins knocked down by this roll
      */
-    public function __construct(int $pins)
+    public function __construct(int $pins, $bonus)
     {
         $this->points = $pins;
+        $this->bonus = $bonus;
     }
 
     /**
