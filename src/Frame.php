@@ -78,7 +78,7 @@ class Frame
      */
     public function canRoll(): bool
     {
-        return $this->rolls <= $this->maxRolls;
+        return $this->rolls + 1 <= $this->maxRolls;
     }
 
     /**
