@@ -179,4 +179,16 @@ class Frame
     {
         return $this->rolls[count($this->rolls) - 1];
     }
+
+    /**
+     * @return int
+     */
+    public function getPoints(): int
+    {
+        $points = 0;
+        foreach ($this->rolls as $roll) {
+            $points += $roll->getPoints();
+        }
+        return $points;
+    }
 }
