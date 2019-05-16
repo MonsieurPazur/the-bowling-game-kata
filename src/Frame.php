@@ -92,7 +92,7 @@ class Frame
     {
         // First we check if there were too many pins knocked down
         if ($this->isLast()) {
-            $tooManyPins = false;
+            $tooManyPins = $this->getLastFramePins() + $roll->getPins() > self::MAX_PINS;
         } else {
             $tooManyPins = $this->getPins() + $roll->getPins() > self::MAX_PINS;
         }
@@ -219,5 +219,19 @@ class Frame
                 $this->availableRolls--;
             }
         }
+    }
+
+    private function getLastFramePins(): int
+    {
+        $pins = 0;
+        foreach ($this->rolls as $roll) {
+            if ($roll->getPins() < 10) {
+                $pins += $roll->getPins();
+            }
+        }
+        if ($this->isSpare()) {
+            $pins = 0;
+        }
+        return $pins;
     }
 }
