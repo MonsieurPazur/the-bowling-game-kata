@@ -17,11 +17,6 @@ use InvalidArgumentException;
 class Game
 {
     /**
-     * @var int number of rolls per frame
-     */
-    const ROLLS_PER_FRAME = 2;
-
-    /**
      * @var int maximum number of rolls within a game
      */
     const MAX_ROLLS = 20;
@@ -42,29 +37,9 @@ class Game
     const FRAMES = 10;
 
     /**
-     * @var int total score from all rolls and bonuses
-     */
-    private $score;
-
-    /**
      * @var array keeps track of scores in specific rolls (including bonus points)
      */
     private $rolls;
-
-    /**
-     * @var int|null index of a roll to which we apply first bonus points from strike
-     */
-    private $strikeFirstBonus;
-
-    /**
-     * @var int|null index of a roll to which we apply second bonus points from strike
-     */
-    private $strikeSecondBonus;
-
-    /**
-     * @var int|null index of a roll to which we apply bonus points from spare
-     */
-    private $spareBonus;
 
     /**
      * @var int number of additional rolls provided in case of strike or spare in the last frame
@@ -82,29 +57,26 @@ class Game
     private $frames;
 
     /**
-     * @var Roll
+     * @var Roll|null strike that we apply bonus points from two rolls
      */
-    private $twoRollsBonus = null;
+    private $twoRollsBonus;
 
     /**
-     * @var Roll
+     * @var Roll|null strike or spare that we apply bonus points from one roll
      */
-    private $oneRollBonus = null;
+    private $oneRollBonus;
 
     /**
      * Game constructor.
      */
     public function __construct()
     {
-        $this->score = 0;
-
         $this->rolls = [];
 
-        $this->strikeFirstBonus = null;
-        $this->strikeSecondBonus = null;
-        $this->spareBonus = null;
-
         $this->bonusRolls = 0;
+
+        $this->twoRollsBonus = null;
+        $this->oneRollBonus = null;
 
         $this->initFrames();
     }
@@ -197,6 +169,8 @@ class Game
         }
         if (!is_null($this->twoRollsBonus)) {
             $this->twoRollsBonus->addPoints($pins);
+
+            // Two roll bonus becomes one roll, since we need to apply bonus points once more.
             $this->oneRollBonus= $this->twoRollsBonus;
             $this->twoRollsBonus = null;
         }

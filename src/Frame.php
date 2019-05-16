@@ -171,7 +171,9 @@ class Frame
     }
 
     /**
-     * @return Roll
+     * Gets roll that was just played.
+     *
+     * @return Roll currenty played roll
      */
     public function getCurrentRoll(): Roll
     {
