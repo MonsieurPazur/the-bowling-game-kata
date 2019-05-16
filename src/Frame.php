@@ -23,6 +23,11 @@ class Frame
     const MAX_ROLLS_LAST = 3;
 
     /**
+     * @var int maximum number of pins that may be knocked down in a roll
+     */
+    const MAX_PINS = 10;
+
+    /**
      * @var bool true if this frame is the last one in the game
      */
     private $last;
@@ -87,10 +92,14 @@ class Frame
     }
 
     /**
-     * @return bool
+     * Checks whether this frame had a strike.
+     *
+     * @param int $pins number of pins knocked down
+     *
+     * @return bool true if this frame had a strike
      */
-    public function isStrike($pins): bool
+    public function isStrike(int $pins): bool
     {
-        return $this->isFirstRoll() && 10 === $pins;
+        return $this->isFirstRoll() && self::MAX_PINS === $pins;
     }
 }

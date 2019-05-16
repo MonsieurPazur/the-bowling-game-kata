@@ -212,7 +212,7 @@ class Game
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
 
-        if ($this->isStrike($pins)) {
+        if ($this->getCurrentFrame()->isStrike($pins)) {
             $this->strike();
         } elseif ($this->isSpare($pins)) {
             $this->spare();
@@ -252,7 +252,7 @@ class Game
     {
         // If we reach frame end, we reset previous roll.
         // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
-        if (!$this->isFirstRollInFrame() || $this->isStrike($pins)) {
+        if (!$this->isFirstRollInFrame() || $this->getCurrentFrame()->isStrike($pins)) {
             $this->previousRoll = 0;
 
             if (!$this->getCurrentFrame()->isLast()) {
@@ -281,18 +281,6 @@ class Game
     private function getLastRollIndex(): int
     {
         return array_keys($this->rolls)[count($this->rolls) - 1];
-    }
-
-    /**
-     * Checks whether this roll was a strike.
-     *
-     * @param int $pins number of pins knocked down in this roll
-     *
-     * @return bool true if this roll was a strike
-     */
-    private function isStrike(int $pins): bool
-    {
-        return $this->getCurrentFrame()->isStrike($pins);
     }
 
     /**
