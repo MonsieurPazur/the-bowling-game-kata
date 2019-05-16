@@ -109,8 +109,6 @@ class Game
      */
     public function roll(int $pins): void
     {
-        $this->validate();
-
         if ($this->isBonusRoll()) {
             $this->bonusRoll($pins);
         } else {
@@ -130,19 +128,6 @@ class Game
             $score += $roll->getPoints();
         }
         return $score;
-    }
-
-    /**
-     * Checks if we can roll.
-     *
-     * @throws InvalidArgumentException
-     * @throws DomainException
-     */
-    private function validate(): void
-    {
-        if (self::MAX_ROLLS === $this->getRollCount() && !$this->isBonusRoll()) {
-            throw new DomainException();
-        }
     }
 
     /**
