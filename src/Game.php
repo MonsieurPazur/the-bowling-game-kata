@@ -62,11 +62,11 @@ class Game
      */
     public function roll(int $pins): void
     {
-        if ($this->isBonusRoll()) {
-            $this->bonusRoll($pins);
-        } else {
-            $this->regularRoll($pins);
-        }
+        $this->updateFrame();
+        $this->getCurrentFrame()->addRoll($pins);
+
+        // This must be run before checking for new strikes or spares.
+        $this->updateBonusPoints($pins);
     }
 
     /**
@@ -98,50 +98,6 @@ class Game
     }
 
     /**
-     * Checks if this roll is supplied by strike or spare in the last frame.
-     *
-     * @return bool true if this is bonus roll
-     */
-    private function isBonusRoll(): bool
-    {
-        return $this->getCurrentFrame()->isLast()
-            && $this->getCurrentFrame()->isBonus();
-    }
-
-    /**
-     * Bonus rolls are supplied by strike or spare in the last frame, and work only
-     * as bonus points providers for strike or spare.
-     *
-     * @param int $pins number of knocked down pins
-     */
-    private function bonusRoll(int $pins): void
-    {
-        $this->makeRoll($pins, true);
-        $this->updateBonusPoints($pins);
-    }
-
-    /**
-     * Regular roll, not supplied by strike or spare in the last frame.
-     *
-     * @param int $pins number of knocked down pins
-     */
-    private function regularRoll(int $pins): void
-    {
-        $this->updateFrame();
-        $this->makeRoll($pins, false);
-
-        // This must be run before checking for new strikes or spares.
-        $this->updateBonusPoints($pins);
-
-        // Next we look for strikes and spares, so we can store references to those.
-        if ($this->getCurrentFrame()->isStrike()) {
-            $this->twoRollsBonus = $this->getCurrentRoll();
-        } elseif ($this->getCurrentFrame()->isSpare()) {
-            $this->oneRollBonus = $this->getCurrentRoll();
-        }
-    }
-
-    /**
      * Keeps track of past rolls and updates their score if there happened to be a strike or spare.
      * In case of strike, we need to keep track of two rolls for bonus points.
      *
@@ -153,12 +109,20 @@ class Game
             $this->oneRollBonus->addPoints($pins);
             $this->oneRollBonus = null;
         }
+
         if (!is_null($this->twoRollsBonus)) {
             $this->twoRollsBonus->addPoints($pins);
 
             // Two roll bonus becomes one roll, since we need to apply bonus points once more (on the next roll).
             $this->oneRollBonus = $this->twoRollsBonus;
             $this->twoRollsBonus = null;
+        }
+
+        // Next we look for strikes and spares, so we can store references to those.
+        if ($this->getCurrentFrame()->isStrike()) {
+            $this->twoRollsBonus = $this->getCurrentRoll();
+        } elseif ($this->getCurrentFrame()->isSpare()) {
+            $this->oneRollBonus = $this->getCurrentRoll();
         }
     }
 
@@ -193,17 +157,5 @@ class Game
     private function getCurrentFrame(): Frame
     {
         return $this->frames[$this->currentFrameIndex];
-    }
-
-    /**
-     * Helper method for creating roll and adding it to current frame.
-     *
-     * @param int $pins amount of pins knocked down
-     * @param bool $bonus true if this is bonus roll
-     */
-    private function makeRoll(int $pins, bool $bonus): void
-    {
-        $roll = new Roll($pins, $bonus);
-        $this->getCurrentFrame()->addRoll($roll);
     }
 }

@@ -65,10 +65,15 @@ class Frame
     /**
      * Adds new Roll to this frame.
      *
-     * @param Roll $roll given roll to be added
+     * @param int $pins amount of pins knocked down in this roll
      */
-    public function addRoll(Roll $roll): void
+    public function addRoll($pins): void
     {
+        if ($this->isBonus()) {
+            $roll = new Roll($pins, true);
+        } else {
+            $roll = new Roll($pins, false);
+        }
         if (!$this->canRoll($roll)) {
             throw new DomainException();
         }
