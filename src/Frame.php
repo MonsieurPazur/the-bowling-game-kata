@@ -144,20 +144,6 @@ class Frame
     }
 
     /**
-     * Gets total amount of pins knocked down in all rolls in this frame.
-     *
-     * @return int total amount of pins knocked down in this frame
-     */
-    private function getPins(): int
-    {
-        $pins = 0;
-        foreach ($this->rolls as $roll) {
-            $pins += $roll->getPins();
-        }
-        return $pins;
-    }
-
-    /**
      * Adds bonus rolls to the last frame.
      *
      * @param int $bonusRolls amount of bonus rolls in this frame
@@ -193,4 +179,27 @@ class Frame
         }
         return $points;
     }
+
+    /**
+     * @return bool
+     */
+    public function isBonus(): bool
+    {
+        return $this->availableRolls > self::MAX_ROLLS;
+    }
+
+    /**
+     * Gets total amount of pins knocked down in all rolls in this frame.
+     *
+     * @return int total amount of pins knocked down in this frame
+     */
+    private function getPins(): int
+    {
+        $pins = 0;
+        foreach ($this->rolls as $roll) {
+            $pins += $roll->getPins();
+        }
+        return $pins;
+    }
+
 }
