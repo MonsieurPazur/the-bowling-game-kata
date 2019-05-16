@@ -24,9 +24,9 @@ class LastFrame extends Frame
     protected function createRoll(int $pins): Roll
     {
         if ($this->isBonus()) {
-            return new Roll($pins, true);
+            return new BonusRoll($pins);
         } else {
-            return new Roll($pins, false);
+            return new Roll($pins);
         }
     }
 
