@@ -6,6 +6,8 @@
 
 namespace App;
 
+use DomainException;
+
 /**
  * Class Frame
  * @package App
@@ -33,7 +35,7 @@ class Frame
     private $last;
 
     /**
-     * @var int how many rolls have already been made within this frame
+     * @var array collection of rolls made within this frame
      */
     private $rolls;
 
@@ -51,6 +53,8 @@ class Frame
     {
         $this->last = $last;
         $this->maxRolls = $last ? self::MAX_ROLLS_LAST : self::MAX_ROLLS;
+
+        $this->rolls = [];
     }
 
     /**
@@ -64,11 +68,16 @@ class Frame
     }
 
     /**
-     * Increments number of rolls made within this frame.
+     * Adds new Roll to this frame.
+     *
+     * @param Roll $roll given roll to be added
      */
-    public function addRoll(): void
+    public function addRoll(Roll $roll): void
     {
-        $this->rolls++;
+        if (!$this->canRoll()) {
+            throw new DomainException();
+        }
+        $this->rolls[] = $roll;
     }
 
     /**
@@ -78,7 +87,7 @@ class Frame
      */
     public function canRoll(): bool
     {
-        return $this->rolls + 1 <= $this->maxRolls;
+        return count($this->rolls) + 1 <= $this->maxRolls;
     }
 
     /**
@@ -88,7 +97,7 @@ class Frame
      */
     public function isFirstRoll(): bool
     {
-        return 1 === $this->rolls;
+        return 1 === count($this->rolls);
     }
 
     /**

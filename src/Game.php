@@ -191,9 +191,7 @@ class Game
      */
     private function bonusRoll(int $pins): void
     {
-        $roll = new Roll($pins, true);
-        $this->rolls[] = $roll;
-        $this->getCurrentFrame()->addRoll($roll);
+        $this->makeRoll($pins, true);
         $this->bonusRolls--;
         $this->updateBonusPoints($pins);
     }
@@ -205,13 +203,7 @@ class Game
      */
     private function regularRoll(int $pins): void
     {
-        if (!$this->getCurrentFrame()->canRoll()) {
-            throw new DomainException();
-        }
-
-        $roll = new Roll($pins, false);
-        $this->rolls[] = $roll;
-        $this->getCurrentFrame()->addRoll($roll);
+        $this->makeRoll($pins, false);
 
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
@@ -371,5 +363,18 @@ class Game
     private function nextFrame(): void
     {
         $this->currentFrame++;
+    }
+
+    /**
+     * Helper method for creating roll and adding it to current frame
+     *
+     * @param int $pins amount of pins knocked down
+     * @param bool $bonus true if this is bonus roll
+     */
+    private function makeRoll(int $pins, bool $bonus): void
+    {
+        $roll = new Roll($pins, $bonus);
+        $this->rolls[] = $roll;
+        $this->getCurrentFrame()->addRoll($roll);
     }
 }
