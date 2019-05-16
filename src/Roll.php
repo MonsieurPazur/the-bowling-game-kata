@@ -61,6 +61,14 @@ class Roll
     }
 
     /**
+     * @return bool
+     */
+    public function isBonus(): bool
+    {
+        return $this->bonus;
+    }
+
+    /**
      * Adds bonus points from strikes and spares
      *
      * @param int $points amount of bonus points

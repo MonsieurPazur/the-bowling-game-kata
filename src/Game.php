@@ -112,7 +112,7 @@ class Game
      */
     private function isBonusRoll(): bool
     {
-        return 0 !== $this->bonusRolls;
+        return $this->getCurrentFrame()->isLast() && $this->getCurrentFrame()->isBonus();
     }
 
     /**
@@ -195,7 +195,7 @@ class Game
     private function strike(): void
     {
         $this->twoRollsBonus = $this->getCurrentRoll();
-        if ($this->isLastFrame() && !$this->isBonusRoll()) {
+        if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
@@ -217,7 +217,7 @@ class Game
     private function spare(): void
     {
         $this->oneRollBonus = $this->getCurrentRoll();
-        if ($this->isLastFrame() && !$this->isBonusRoll()) {
+        if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
             $this->bonusRolls = self::SPARE_BONUS_ROLLS;
         }
