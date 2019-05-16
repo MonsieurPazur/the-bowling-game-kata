@@ -7,12 +7,24 @@
 
 namespace App;
 
+use InvalidArgumentException;
+
 /**
  * Class Roll
  * @package App
  */
 class Roll
 {
+    /**
+     * @var int minimum number of pins that may be knocked down in a roll
+     */
+    const MIN_PINS = 0;
+
+    /**
+     * @var int maximum number of pins that may be knocked down in a roll
+     */
+    const MAX_PINS = 10;
+
     /**
      * @var int amount of points (from knocked down pins and bonus points)
      */
@@ -23,6 +35,9 @@ class Roll
      */
     private $bonus;
 
+    /**
+     * @var int amount of pins knocked down in this roll
+     */
     private $pins;
 
     /**
@@ -33,8 +48,11 @@ class Roll
      */
     public function __construct(int $pins, bool $bonus)
     {
+        $this->validate($pins);
+
         $this->pins = $pins;
         $this->bonus = $bonus;
+
         if ($bonus) {
             $this->points = 0;
         } else {
@@ -62,8 +80,28 @@ class Roll
         return $this->points;
     }
 
+    /**
+     * Gets amount of pins knocked down in this roll
+     *
+     * @return int amount of pins knocked down
+     */
     public function getPins(): int
     {
         return $this->pins;
+    }
+
+    /**
+     * Checks if number of pins knocked down is correct.
+     *
+     * @param int $pins number of pins knocked down
+     */
+    private function validate(int $pins): void
+    {
+        if ($pins < self::MIN_PINS) {
+            throw new InvalidArgumentException();
+        }
+        if ($pins > self::MAX_PINS) {
+            throw new InvalidArgumentException();
+        }
     }
 }

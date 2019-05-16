@@ -74,20 +74,31 @@ class Frame
      */
     public function addRoll(Roll $roll): void
     {
-        if (!$this->canRoll()) {
+        if (!$this->canRoll($roll)) {
             throw new DomainException();
         }
         $this->rolls[] = $roll;
     }
 
     /**
-     * Checks whether we can roll within this frame.
+     * Checks whether we can make specific roll within this frame.
+     *
+     * @param Roll $roll a roll we want to make
      *
      * @return bool true if we can roll within this frame
      */
-    public function canRoll(): bool
+    public function canRoll(Roll $roll): bool
     {
-        return count($this->rolls) + 1 <= $this->maxRolls;
+        // First we check if there were too many pins knocked down
+        if ($this->isLast()) {
+            $tooManyPins = false;
+        } else {
+            $tooManyPins = $this->getPins() + $roll->getPins() > self::MAX_PINS;
+        }
+
+        // Then we check if we can roll more within this frame
+        $tooManyRolls = count($this->rolls) + 1 > $this->maxRolls;
+        return !$tooManyPins && !$tooManyRolls;
     }
 
     /**
@@ -111,17 +122,30 @@ class Frame
     }
 
     /**
-     * @return bool
+     * Checks whether this frame had a spare.
+     *
+     * @return bool true if this frame had a spare
      */
     public function isSpare(): bool
     {
         if ($this->isStrike()) {
             return false;
         }
+        $pins = $this->getPins();
+        return self::MAX_PINS === $pins;
+    }
+
+    /**
+     * Gets total amount of pins knocked down in all rolls in this frame.
+     *
+     * @return int total amount of pins knocked down in this frame
+     */
+    private function getPins(): int
+    {
         $pins = 0;
         foreach ($this->rolls as $roll) {
             $pins += $roll->getPins();
         }
-        return self::MAX_PINS === $pins;
+        return $pins;
     }
 }

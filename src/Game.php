@@ -17,16 +17,6 @@ use InvalidArgumentException;
 class Game
 {
     /**
-     * @var int minimum number of pins that may be knocked down in a roll
-     */
-    const MIN_PINS = 0;
-
-    /**
-     * @var int maximum number of pins that may be knocked down in a roll
-     */
-    const MAX_PINS = 10;
-
-    /**
      * @var int number of rolls per frame
      */
     const ROLLS_PER_FRAME = 2;
@@ -55,11 +45,6 @@ class Game
      * @var int total score from all rolls and bonuses
      */
     private $score;
-
-    /**
-     * @var int value (pins knocked down) of previous roll
-     */
-    private $previousRoll;
 
     /**
      * @var array keeps track of scores in specific rolls (including bonus points)
@@ -102,7 +87,6 @@ class Game
     public function __construct()
     {
         $this->score = 0;
-        $this->previousRoll = 0;
 
         $this->rolls = [];
 
@@ -125,7 +109,7 @@ class Game
      */
     public function roll(int $pins): void
     {
-        $this->validateRoll($pins);
+        $this->validate();
 
         if ($this->isBonusRoll()) {
             $this->bonusRoll($pins);
@@ -149,25 +133,13 @@ class Game
     }
 
     /**
-     * Checks whether correct number of pins were knocked down.
-     * Also checks if we can roll further.
-     *
-     * @param int $pins number of knocked down pins
+     * Checks if we can roll.
      *
      * @throws InvalidArgumentException
      * @throws DomainException
      */
-    private function validateRoll(int $pins): void
+    private function validate(): void
     {
-        if ($pins < self::MIN_PINS) {
-            throw new InvalidArgumentException();
-        }
-        if ($pins > self::MAX_PINS) {
-            throw new InvalidArgumentException();
-        }
-        if ($pins + $this->previousRoll > self::MAX_PINS) {
-            throw new DomainException();
-        }
         if (self::MAX_ROLLS === $this->getRollCount() && !$this->isBonusRoll()) {
             throw new DomainException();
         }
@@ -208,12 +180,12 @@ class Game
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
 
-        if ($this->getCurrentFrame()->isStrike($pins)) {
+        if ($this->getCurrentFrame()->isStrike()) {
             $this->strike();
-        } elseif ($this->isSpare($pins)) {
+        } elseif ($this->isSpare()) {
             $this->spare();
         }
-        $this->updatePrevious($pins);
+        $this->updateFrame();
     }
 
     /**
@@ -240,22 +212,16 @@ class Game
     }
 
     /**
-     * Updates previous roll's knocked down pins.
-     *
-     * @param int $pins pins knocked down in current roll to be updated
+     * Checks for next frame
      */
-    private function updatePrevious(int $pins): void
+    private function updateFrame(): void
     {
         // If we reach frame end, we reset previous roll.
         // Also in case of strike, we don't set up this roll as previous, becouse after strike frame ends.
-        if (!$this->isFirstRollInFrame() || $this->getCurrentFrame()->isStrike($pins)) {
-            $this->previousRoll = 0;
-
+        if (!$this->isFirstRollInFrame() || $this->getCurrentFrame()->isStrike()) {
             if (!$this->getCurrentFrame()->isLast()) {
                 $this->nextFrame();
             }
-        } else {
-            $this->previousRoll = $pins;
         }
     }
 
@@ -293,11 +259,9 @@ class Game
     /**
      * Checks whether this roll was a spare.
      *
-     * @param int $pins number of pins knocked down in this roll
-     *
      * @return bool true if this roll was a spare
      */
-    private function isSpare(int $pins): bool
+    private function isSpare(): bool
     {
         return $this->getCurrentFrame()->isSpare();
     }
