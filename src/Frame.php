@@ -74,7 +74,9 @@ class Frame
         }
         $this->rolls[] = $roll;
         if ($this->isStrike()) {
-            $this->availableRolls--;
+            $this->strike();
+        } elseif ($this->isSpare()) {
+            $this->spare();
         }
     }
 
@@ -202,6 +204,24 @@ class Frame
             $pins += $roll->getPins();
         }
         return $pins;
+    }
+
+    private function strike(): void
+    {
+        // We should only increment this once (so bonus rolls don't count).
+        if ($this->isLast() && !$this->isBonus()) {
+            $this->availableRolls++;
+        } else {
+            $this->availableRolls--;
+        }
+    }
+
+    private function spare(): void
+    {
+        // We should only increment this once (so bonus rolls don't count).
+        if ($this->isLast() && !$this->isBonus()) {
+            $this->availableRolls++;
+        }
     }
 
 }
