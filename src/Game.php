@@ -82,6 +82,16 @@ class Game
     private $frames;
 
     /**
+     * @var Roll
+     */
+    private $twoRollsBonus = null;
+
+    /**
+     * @var Roll
+     */
+    private $oneRollBonus = null;
+
+    /**
      * Game constructor.
      */
     public function __construct()
@@ -181,18 +191,14 @@ class Game
      */
     private function updateBonusPoints(int $pins): void
     {
-        if (!is_null($this->spareBonus)) {
-            $this->rolls[$this->spareBonus]->addPoints($pins);
-            $this->spareBonus = null;
+        if (!is_null($this->oneRollBonus)) {
+            $this->oneRollBonus->addPoints($pins);
+            $this->oneRollBonus = null;
         }
-        if (!is_null($this->strikeSecondBonus)) {
-            $this->rolls[$this->strikeSecondBonus]->addPoints($pins);
-            $this->strikeSecondBonus = null;
-        }
-        if (!is_null($this->strikeFirstBonus)) {
-            $this->rolls[$this->strikeFirstBonus]->addPoints($pins);
-            $this->strikeSecondBonus= $this->strikeFirstBonus;
-            $this->strikeFirstBonus = null;
+        if (!is_null($this->twoRollsBonus)) {
+            $this->twoRollsBonus->addPoints($pins);
+            $this->oneRollBonus= $this->twoRollsBonus;
+            $this->twoRollsBonus = null;
         }
     }
 
@@ -209,9 +215,9 @@ class Game
     /**
      * Helper method for getting index of the last made roll.
      *
-     * @return int index of last made roll
+     * @return Roll currently made roll
      */
-    private function getCurrentRoll(): int
+    private function getCurrentRoll(): Roll
     {
         return $this->getCurrentFrame()->getCurrentRoll();
     }
@@ -221,7 +227,7 @@ class Game
      */
     private function strike(): void
     {
-        $this->strikeFirstBonus = $this->getCurrentRoll();
+        $this->twoRollsBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
@@ -243,7 +249,7 @@ class Game
      */
     private function spare(): void
     {
-        $this->spareBonus = $this->getCurrentRoll();
+        $this->oneRollBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
             $this->bonusRolls = self::SPARE_BONUS_ROLLS;

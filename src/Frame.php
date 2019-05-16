@@ -169,4 +169,12 @@ class Frame
         }
         $this->availableRolls += $bonusRolls;
     }
+
+    /**
+     * @return Roll
+     */
+    public function getCurrentRoll(): Roll
+    {
+        return $this->rolls[count($this->rolls) - 1];
+    }
 }
