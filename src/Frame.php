@@ -43,6 +43,10 @@ class Frame
      * @var int how many rolls can be made within this frame
      */
     private $maxRolls;
+    /**
+     * @var int
+     */
+    private $bonusRolls;
 
     /**
      * Frame constructor.
@@ -157,5 +161,13 @@ class Frame
             $pins += $roll->getPins();
         }
         return $pins;
+    }
+
+    /**
+     * @param int $bonusRolls
+     */
+    public function addBonusRolls(int $bonusRolls): void
+    {
+        $this->bonusRolls = $bonusRolls;
     }
 }
