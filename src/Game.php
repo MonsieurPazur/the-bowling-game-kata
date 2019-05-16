@@ -74,7 +74,7 @@ class Game
     /**
      * @var int index of the current frame
      */
-    private $currentFrame;
+    private $currentFrameIndex;
 
     /**
      * @var array collection of Frame objects
@@ -207,16 +207,6 @@ class Game
     }
 
     /**
-     * Helper method for getting number of rolls made so far.
-     *
-     * @return int rolls made so far
-     */
-    private function getRollCount(): int
-    {
-        return count($this->rolls);
-    }
-
-    /**
      * Helper method for getting index of the last made roll.
      *
      * @return int index of last made roll
@@ -279,7 +269,7 @@ class Game
 
         // Last frame is different
         $this->frames[] = new Frame(true);
-        $this->currentFrame = 0;
+        $this->currentFrameIndex = 0;
     }
 
     /**
@@ -289,7 +279,7 @@ class Game
      */
     private function getCurrentFrame(): Frame
     {
-        return $this->frames[$this->currentFrame];
+        return $this->frames[$this->currentFrameIndex];
     }
 
     /**
@@ -300,7 +290,7 @@ class Game
         if ($this->getCurrentFrame()->isLast()) {
             throw new DomainException();
         }
-        $this->currentFrame++;
+        $this->currentFrameIndex++;
     }
 
     /**
