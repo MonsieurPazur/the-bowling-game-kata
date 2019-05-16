@@ -126,7 +126,6 @@ class Game
     public function roll(int $pins): void
     {
         $this->validateRoll($pins);
-        $this->getCurrentFrame()->addRoll();
 
         if ($this->isBonusRoll()) {
             $this->bonusRoll($pins);
@@ -192,7 +191,9 @@ class Game
      */
     private function bonusRoll(int $pins): void
     {
-        $this->rolls[] = new Roll($pins, true);
+        $roll = new Roll($pins, true);
+        $this->rolls[] = $roll;
+        $this->getCurrentFrame()->addRoll($roll);
         $this->bonusRolls--;
         $this->updateBonusPoints($pins);
     }
@@ -208,7 +209,9 @@ class Game
             throw new DomainException();
         }
 
-        $this->rolls[] = new Roll($pins, false);
+        $roll = new Roll($pins, false);
+        $this->rolls[] = $roll;
+        $this->getCurrentFrame()->addRoll($roll);
 
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
