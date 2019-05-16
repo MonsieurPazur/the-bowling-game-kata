@@ -167,7 +167,7 @@ class Frame
     }
 
     /**
-     * Get combine number of points from this frame's rolls
+     * Get combine number of points from this frame's rolls.
      *
      * @return int amount of points from all rolls within this frame
      */
@@ -181,7 +181,9 @@ class Frame
     }
 
     /**
-     * @return bool
+     * Checks if this frame rolls will be counted as bonus points.
+     *
+     * @return bool true if rolls are bonus
      */
     public function isBonus(): bool
     {

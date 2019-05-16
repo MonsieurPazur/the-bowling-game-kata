@@ -37,11 +37,6 @@ class Game
     const FRAMES = 10;
 
     /**
-     * @var int number of additional rolls provided in case of strike or spare in the last frame
-     */
-    private $bonusRolls;
-
-    /**
      * @var int index of the current frame
      */
     private $currentFrameIndex;
@@ -66,8 +61,6 @@ class Game
      */
     public function __construct()
     {
-        $this->bonusRolls = 0;
-
         $this->twoRollsBonus = null;
         $this->oneRollBonus = null;
 
@@ -124,7 +117,6 @@ class Game
     private function bonusRoll(int $pins): void
     {
         $this->makeRoll($pins, true);
-        $this->bonusRolls--;
         $this->updateBonusPoints($pins);
     }
 
@@ -197,7 +189,6 @@ class Game
         $this->twoRollsBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
-            $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
     }
 
@@ -219,7 +210,6 @@ class Game
         $this->oneRollBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
-            $this->bonusRolls = self::SPARE_BONUS_ROLLS;
         }
     }
 
@@ -269,7 +259,7 @@ class Game
     }
 
     /**
-     * Helper method for creating roll and adding it to current frame
+     * Helper method for creating roll and adding it to current frame.
      *
      * @param int $pins amount of pins knocked down
      * @param bool $bonus true if this is bonus roll
