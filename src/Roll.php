@@ -53,11 +53,8 @@ class Roll
         $this->pins = $pins;
         $this->bonus = $bonus;
 
-        if ($bonus) {
-            $this->points = 0;
-        } else {
-            $this->points = $pins;
-        }
+        // We don't count bonus rolls normally.
+        $this->points = $bonus ? 0 : $pins;
     }
 
     /**

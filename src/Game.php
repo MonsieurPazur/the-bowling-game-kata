@@ -17,21 +17,6 @@ use InvalidArgumentException;
 class Game
 {
     /**
-     * @var int maximum number of rolls within a game
-     */
-    const MAX_ROLLS = 20;
-
-    /**
-     * @var int number of additional rolls to be provided in case of strike in last frame
-     */
-    const STRIKE_BONUS_ROLLS = 2;
-
-    /**
-     * @var int number of additional rolls to be provided in case of spare in last frame
-     */
-    const SPARE_BONUS_ROLLS = 1;
-
-    /**
      * @var int number of frames that the game consists of
      */
     const FRAMES = 10;
@@ -99,13 +84,28 @@ class Game
     }
 
     /**
+     * Initializes fixed amount of frames that will be played during game.
+     */
+    private function initFrames(): void
+    {
+        for ($i = 0; $i < self::FRAMES - 1; $i++) {
+            $this->frames[] = new Frame(false);
+        }
+
+        // Last frame is different
+        $this->frames[] = new Frame(true);
+        $this->currentFrameIndex = 0;
+    }
+
+    /**
      * Checks if this roll is supplied by strike or spare in the last frame.
      *
      * @return bool true if this is bonus roll
      */
     private function isBonusRoll(): bool
     {
-        return $this->getCurrentFrame()->isLast() && $this->getCurrentFrame()->isBonus();
+        return $this->getCurrentFrame()->isLast()
+            && $this->getCurrentFrame()->isBonus();
     }
 
     /**
@@ -133,9 +133,10 @@ class Game
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
 
+        // Next we look for strikes and spares, so we can store references to those.
         if ($this->getCurrentFrame()->isStrike()) {
             $this->twoRollsBonus = $this->getCurrentRoll();
-        } elseif ($this->isSpare()) {
+        } elseif ($this->getCurrentFrame()->isSpare()) {
             $this->oneRollBonus = $this->getCurrentRoll();
         }
     }
@@ -155,19 +156,22 @@ class Game
         if (!is_null($this->twoRollsBonus)) {
             $this->twoRollsBonus->addPoints($pins);
 
-            // Two roll bonus becomes one roll, since we need to apply bonus points once more.
-            $this->oneRollBonus= $this->twoRollsBonus;
+            // Two roll bonus becomes one roll, since we need to apply bonus points once more (on the next roll).
+            $this->oneRollBonus = $this->twoRollsBonus;
             $this->twoRollsBonus = null;
         }
     }
 
     /**
-     * Checks for next frame
+     * Checks for next frame.
      */
     private function updateFrame(): void
     {
         if ($this->getCurrentFrame()->isDone()) {
-            $this->nextFrame();
+            if ($this->getCurrentFrame()->isLast()) {
+                throw new DomainException();
+            }
+            $this->currentFrameIndex++;
         }
     }
 
@@ -182,60 +186,6 @@ class Game
     }
 
     /**
-     * Stores last made roll as a strike (for first out of two bonus point rolls).
-     */
-    private function strike(): void
-    {
-        if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
-            $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
-        }
-    }
-
-    /**
-     * Checks whether this roll was a spare.
-     *
-     * @return bool true if this roll was a spare
-     */
-    private function isSpare(): bool
-    {
-        return $this->getCurrentFrame()->isSpare();
-    }
-
-    /**
-     * Stores last made roll as a spare.
-     */
-    private function spare(): void
-    {
-        if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
-            $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
-        }
-    }
-
-    /**
-     * Checks whether current frame is the last in the game.
-     *
-     * @return bool true if this is the last frame of the game
-     */
-    private function isLastFrame(): bool
-    {
-        return $this->getCurrentFrame()->isLast();
-    }
-
-    /**
-     * Initializes fixed amount of frames that will be played during game.
-     */
-    private function initFrames(): void
-    {
-        for ($i = 0; $i < self::FRAMES - 1; $i++) {
-            $this->frames[] = new Frame(false);
-        }
-
-        // Last frame is different
-        $this->frames[] = new Frame(true);
-        $this->currentFrameIndex = 0;
-    }
-
-    /**
      * Gets frame, that's currently being played.
      *
      * @return Frame currently played frame
@@ -243,17 +193,6 @@ class Game
     private function getCurrentFrame(): Frame
     {
         return $this->frames[$this->currentFrameIndex];
-    }
-
-    /**
-     * Increments current frame reference.
-     */
-    private function nextFrame(): void
-    {
-        if ($this->getCurrentFrame()->isLast()) {
-            throw new DomainException();
-        }
-        $this->currentFrameIndex++;
     }
 
     /**

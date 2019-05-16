@@ -73,11 +73,7 @@ class Frame
             throw new DomainException();
         }
         $this->rolls[] = $roll;
-        if ($this->isStrike()) {
-            $this->strike();
-        } elseif ($this->isSpare()) {
-            $this->spare();
-        }
+        $this->handleAvailableRolls();
     }
 
     /**
@@ -206,22 +202,17 @@ class Frame
         return $pins;
     }
 
-    private function strike(): void
+    /**
+     * Handle adding or substracting available rolls based on strikes and spares.
+     */
+    private function handleAvailableRolls(): void
     {
-        // We should only increment this once (so bonus rolls don't count).
-        if ($this->isLast() && !$this->isBonus()) {
+        if ($this->isLast() && !$this->isBonus() && ($this->isStrike() || $this->isSpare())) {
             $this->availableRolls++;
         } else {
-            $this->availableRolls--;
+            if ($this->isStrike()) {
+                $this->availableRolls--;
+            }
         }
     }
-
-    private function spare(): void
-    {
-        // We should only increment this once (so bonus rolls don't count).
-        if ($this->isLast() && !$this->isBonus()) {
-            $this->availableRolls++;
-        }
-    }
-
 }
