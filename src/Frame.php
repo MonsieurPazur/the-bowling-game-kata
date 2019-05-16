@@ -44,6 +44,8 @@ class Frame
      */
     private $maxRolls;
 
+    private $done = false;
+
     /**
      * Frame constructor.
      *
@@ -78,6 +80,10 @@ class Frame
             throw new DomainException();
         }
         $this->rolls[] = $roll;
+
+        if (count($this->rolls) === $this->maxRolls || ($this->isStrike() && !$this->isLast())) {
+            $this->done = true;
+        }
     }
 
     /**
@@ -133,6 +139,11 @@ class Frame
         }
         $pins = $this->getPins();
         return self::MAX_PINS === $pins;
+    }
+
+    public function isDone(): bool
+    {
+        return $this->done;
     }
 
     /**
