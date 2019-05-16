@@ -167,5 +167,9 @@ class BowlingGameTest extends TestCase
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0],
             DomainException::class
         ];
+        yield 'strike in last frame, then too many pins' => [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 5, 7],
+            DomainException::class
+        ];
     }
 }
