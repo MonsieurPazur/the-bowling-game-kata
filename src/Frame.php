@@ -85,4 +85,12 @@ class Frame
     {
         return 1 === $this->rolls;
     }
+
+    /**
+     * @return bool
+     */
+    public function isStrike($pins): bool
+    {
+        return $this->isFirstRoll() && 10 === $pins;
+    }
 }

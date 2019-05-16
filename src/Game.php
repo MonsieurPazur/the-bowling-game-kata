@@ -292,7 +292,7 @@ class Game
      */
     private function isStrike(int $pins): bool
     {
-        return $this->getCurrentFrame()->isStrike();
+        return $this->getCurrentFrame()->isStrike($pins);
     }
 
     /**
