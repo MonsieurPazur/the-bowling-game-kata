@@ -63,23 +63,6 @@ class Frame
     }
 
     /**
-     * Checks whether we can make specific roll within this frame.
-     *
-     * @param Roll $roll a roll we want to make
-     *
-     * @return bool true if we can roll within this frame
-     */
-    public function canRoll(Roll $roll): bool
-    {
-        // We can't knock down more pins that there are on the track.
-        $validPins = $this->availablePins - $roll->getPins() >= 0;
-
-        // Then we check if we can roll more within this frame
-        $validRolls = count($this->rolls) + 1 <= $this->availableRolls;
-        return $validPins && $validRolls;
-    }
-
-    /**
      * Checks whether this frame had a strike.
      *
      * @return bool true if this frame had a strike
@@ -179,5 +162,22 @@ class Frame
             $pins += $roll->getPins();
         }
         return $pins;
+    }
+
+    /**
+     * Checks whether we can make specific roll within this frame.
+     *
+     * @param Roll $roll a roll we want to make
+     *
+     * @return bool true if we can roll within this frame
+     */
+    private function canRoll(Roll $roll): bool
+    {
+        // We can't knock down more pins that there are on the track.
+        $validPins = $this->availablePins - $roll->getPins() >= 0;
+
+        // Then we check if we can roll more within this frame
+        $validRolls = count($this->rolls) + 1 <= $this->availableRolls;
+        return $validPins && $validRolls;
     }
 }
