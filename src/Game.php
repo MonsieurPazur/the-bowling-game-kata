@@ -223,6 +223,7 @@ class Game
     {
         $this->strikeFirstBonus = $this->getLastRollIndex();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
+            $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
         }
     }
@@ -244,6 +245,7 @@ class Game
     {
         $this->spareBonus = $this->getLastRollIndex();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
+            $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
             $this->bonusRolls = self::SPARE_BONUS_ROLLS;
         }
     }
