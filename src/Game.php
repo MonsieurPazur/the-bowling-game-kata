@@ -37,11 +37,6 @@ class Game
     const FRAMES = 10;
 
     /**
-     * @var array keeps track of scores in specific rolls (including bonus points)
-     */
-    private $rolls;
-
-    /**
      * @var int number of additional rolls provided in case of strike or spare in the last frame
      */
     private $bonusRolls;
@@ -52,7 +47,7 @@ class Game
     private $currentFrameIndex;
 
     /**
-     * @var array collection of Frame objects
+     * @var Frame[] collection of Frame objects
      */
     private $frames;
 
@@ -71,8 +66,6 @@ class Game
      */
     public function __construct()
     {
-        $this->rolls = [];
-
         $this->bonusRolls = 0;
 
         $this->twoRollsBonus = null;
@@ -284,7 +277,6 @@ class Game
     private function makeRoll(int $pins, bool $bonus): void
     {
         $roll = new Roll($pins, $bonus);
-        $this->rolls[] = $roll;
         $this->getCurrentFrame()->addRoll($roll);
     }
 }

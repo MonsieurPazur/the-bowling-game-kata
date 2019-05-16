@@ -30,7 +30,7 @@ class Frame
     private $last;
 
     /**
-     * @var array collection of rolls made within this frame
+     * @var Roll[] collection of rolls made within this frame
      */
     private $rolls;
 
@@ -181,7 +181,9 @@ class Frame
     }
 
     /**
-     * @return int
+     * Get combine number of points from this frame's rolls
+     *
+     * @return int amount of points from all rolls within this frame
      */
     public function getPoints(): int
     {
