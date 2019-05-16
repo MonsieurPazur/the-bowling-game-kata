@@ -44,8 +44,6 @@ class Frame
      */
     private $maxRolls;
 
-    private $done = false;
-
     /**
      * Frame constructor.
      *
@@ -80,10 +78,6 @@ class Frame
             throw new DomainException();
         }
         $this->rolls[] = $roll;
-
-        if (count($this->rolls) === $this->maxRolls || ($this->isStrike() && !$this->isLast())) {
-            $this->done = true;
-        }
     }
 
     /**
@@ -141,9 +135,14 @@ class Frame
         return self::MAX_PINS === $pins;
     }
 
+    /**
+     * Check whether this frame is done, means we don't roll anymore within it
+     *
+     * @return bool true if this frame is done
+     */
     public function isDone(): bool
     {
-        return $this->done;
+        return count($this->rolls) === $this->maxRolls || ($this->isStrike() && !$this->isLast());
     }
 
     /**

@@ -274,16 +274,6 @@ class Game
     }
 
     /**
-     * Helper method for checking if the last roll was the first in a frame.
-     *
-     * @return bool true if the last roll was the first in a frame
-     */
-    private function isFirstRollInFrame(): bool
-    {
-        return $this->getCurrentFrame()->isFirstRoll();
-    }
-
-    /**
      * Checks whether current frame is the last in the game.
      *
      * @return bool true if this is the last frame of the game
