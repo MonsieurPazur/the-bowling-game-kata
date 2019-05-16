@@ -12,13 +12,4 @@ namespace App;
  */
 class LastFrame extends Frame
 {
-
-    /**
-     * LastFrame constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->last = true;
-    }
 }

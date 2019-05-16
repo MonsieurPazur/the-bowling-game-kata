@@ -25,11 +25,6 @@ class Frame
     const MAX_PINS = 10;
 
     /**
-     * @var bool true if this frame is the last one in the game
-     */
-    protected $last;
-
-    /**
      * @var Roll[] collection of rolls made within this frame
      */
     private $rolls;
@@ -49,7 +44,6 @@ class Frame
      */
     public function __construct()
     {
-        $this->last = false;
         $this->availableRolls = self::MAX_ROLLS;
         $this->availablePins = self::MAX_PINS;
 
