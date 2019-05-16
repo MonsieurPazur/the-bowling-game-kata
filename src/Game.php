@@ -299,7 +299,7 @@ class Game
      */
     private function isSpare(int $pins): bool
     {
-        return self::MAX_PINS === $pins + $this->previousRoll;
+        return $this->getCurrentFrame()->isSpare($pins);
     }
 
     /**
