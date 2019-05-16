@@ -20,11 +20,6 @@ class Frame
     const MAX_ROLLS = 2;
 
     /**
-     * @var int maximum number of pins that may be knocked down in a roll
-     */
-    const MAX_PINS = 10;
-
-    /**
      * @var int rolls available (to be made) within frame
      */
     protected $availableRolls;
@@ -45,7 +40,7 @@ class Frame
     public function __construct()
     {
         $this->availableRolls = self::MAX_ROLLS;
-        $this->availablePins = self::MAX_PINS;
+        $this->availablePins = Roll::MAX_PINS;
 
         $this->rolls = [];
     }
@@ -92,7 +87,7 @@ class Frame
     public function isStrike(): bool
     {
         // Only one roll in frame (so first) and maximum amount of pins knocked down
-        return 1 === count($this->rolls) && self::MAX_PINS === $this->rolls[0]->getPins();
+        return 1 === count($this->rolls) && Roll::MAX_PINS === $this->rolls[0]->getPins();
     }
 
     /**
@@ -105,8 +100,7 @@ class Frame
         if ($this->isStrike()) {
             return false;
         }
-        $pins = $this->getPins();
-        return self::MAX_PINS === $pins;
+        return Roll::MAX_PINS === $this->getPins();
     }
 
     /**
@@ -152,7 +146,7 @@ class Frame
      */
     protected function createRoll(int $pins): Roll
     {
-        return new Roll($pins, false);
+        return new Roll($pins);
     }
 
     /**

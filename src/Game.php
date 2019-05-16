@@ -115,7 +115,7 @@ class Game
         if (!is_null($this->twoRollsBonus)) {
             $this->twoRollsBonus->addPoints($pins);
 
-            // Two roll bonus becomes one roll, since we need to apply bonus points once more (on the next roll).
+            // $twoRollsBonus becomes $oneRollBonus, since we need to apply bonus points once more (on the next roll).
             $this->oneRollBonus = $this->twoRollsBonus;
             $this->twoRollsBonus = null;
         }
