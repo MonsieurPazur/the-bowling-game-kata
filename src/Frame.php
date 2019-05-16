@@ -40,6 +40,11 @@ class Frame
     private $availableRolls;
 
     /**
+     * @var int pins that can be knocked down in this frame
+     */
+    private $availablePins;
+
+    /**
      * Frame constructor.
      *
      * @param bool $last tells if this frame is the last one in the game
@@ -48,6 +53,7 @@ class Frame
     {
         $this->last = $last;
         $this->availableRolls = self::MAX_ROLLS;
+        $this->availablePins = self::MAX_PINS;
 
         $this->rolls = [];
     }
@@ -78,7 +84,9 @@ class Frame
             throw new DomainException();
         }
         $this->rolls[] = $roll;
+
         $this->handleAvailableRolls();
+        $this->handleAvailablePins();
     }
 
     /**
@@ -90,16 +98,12 @@ class Frame
      */
     public function canRoll(Roll $roll): bool
     {
-        // First we check if there were too many pins knocked down
-        if ($this->isLast()) {
-            $tooManyPins = $this->getLastFramePins() + $roll->getPins() > self::MAX_PINS;
-        } else {
-            $tooManyPins = $this->getPins() + $roll->getPins() > self::MAX_PINS;
-        }
+        // We can't knock down more pins that there are on the track.
+        $validPins = $this->availablePins - $roll->getPins() >= 0;
 
         // Then we check if we can roll more within this frame
-        $tooManyRolls = count($this->rolls) + 1 > $this->availableRolls;
-        return !$tooManyPins && !$tooManyRolls;
+        $validRolls = count($this->rolls) + 1 <= $this->availableRolls;
+        return $validPins && $validRolls;
     }
 
     /**
@@ -221,17 +225,17 @@ class Frame
         }
     }
 
-    private function getLastFramePins(): int
+    /**
+     * Keeps track of pins left.
+     */
+    private function handleAvailablePins(): void
     {
-        $pins = 0;
-        foreach ($this->rolls as $roll) {
-            if ($roll->getPins() < 10) {
-                $pins += $roll->getPins();
-            }
+        $this->availablePins -= $this->getCurrentRoll()->getPins();
+
+        // We need to reset pins during last frame, since there is a possibility to knock down
+        // all of them and continue within the same frame.
+        if ($this->availablePins === 0 && $this->isLast()) {
+            $this->availablePins = self::MAX_PINS;
         }
-        if ($this->isSpare()) {
-            $pins = 0;
-        }
-        return $pins;
     }
 }
