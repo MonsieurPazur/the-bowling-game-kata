@@ -292,7 +292,7 @@ class Game
      */
     private function isStrike(int $pins): bool
     {
-        return self::MAX_PINS === $pins && $this->isFirstRollInFrame();
+        return $this->getCurrentFrame()->isStrike();
     }
 
     /**
