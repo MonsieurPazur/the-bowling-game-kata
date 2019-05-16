@@ -29,6 +29,9 @@ class Roll
     {
         $this->points = $pins;
         $this->bonus = $bonus;
+        if ($this->bonus) {
+            $this->points = 0;
+        }
     }
 
     /**
@@ -49,5 +52,13 @@ class Roll
     public function getPoints(): int
     {
         return $this->points;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBonus(): bool
+    {
+        return $this->bonus;
     }
 }

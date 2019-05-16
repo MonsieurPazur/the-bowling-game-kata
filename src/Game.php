@@ -208,7 +208,7 @@ class Game
             throw new DomainException();
         }
 
-        $this->rolls[] = new Roll($pins);
+        $this->rolls[] = new Roll($pins, false);
 
         // This must be run before checking for new strikes or spares.
         $this->updateBonusPoints($pins);
