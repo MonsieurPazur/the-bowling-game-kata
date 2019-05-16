@@ -134,7 +134,7 @@ class Game
     private function updateFrame(): void
     {
         if ($this->getCurrentFrame()->isDone()) {
-            if ($this->getCurrentFrame()->isLast()) {
+            if ($this->currentFrameIndex === self::FRAMES - 1) {
                 throw new DomainException();
             }
             $this->currentFrameIndex++;

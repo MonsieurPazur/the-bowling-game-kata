@@ -27,7 +27,7 @@ class Frame
     /**
      * @var bool true if this frame is the last one in the game
      */
-    private $last;
+    protected $last;
 
     /**
      * @var Roll[] collection of rolls made within this frame
@@ -46,12 +46,10 @@ class Frame
 
     /**
      * Frame constructor.
-     *
-     * @param bool $last tells if this frame is the last one in the game
      */
-    public function __construct(bool $last)
+    public function __construct()
     {
-        $this->last = $last;
+        $this->last = false;
         $this->availableRolls = self::MAX_ROLLS;
         $this->availablePins = self::MAX_PINS;
 
