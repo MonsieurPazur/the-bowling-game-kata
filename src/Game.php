@@ -211,9 +211,9 @@ class Game
      *
      * @return int index of last made roll
      */
-    private function getLastRollIndex(): int
+    private function getCurrentRoll(): int
     {
-        return array_keys($this->rolls)[count($this->rolls) - 1];
+        return $this->getCurrentFrame()->getCurrentRoll();
     }
 
     /**
@@ -221,7 +221,7 @@ class Game
      */
     private function strike(): void
     {
-        $this->strikeFirstBonus = $this->getLastRollIndex();
+        $this->strikeFirstBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
             $this->bonusRolls = self::STRIKE_BONUS_ROLLS;
@@ -243,7 +243,7 @@ class Game
      */
     private function spare(): void
     {
-        $this->spareBonus = $this->getLastRollIndex();
+        $this->spareBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->isBonusRoll()) {
             $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
             $this->bonusRolls = self::SPARE_BONUS_ROLLS;
