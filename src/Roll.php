@@ -28,12 +28,7 @@ class Roll
     /**
      * @var int amount of points (from knocked down pins and bonus points)
      */
-    private $points;
-
-    /**
-     * @var bool true if this roll is a bonus one (from spare or strike in the last frame)
-     */
-    private $bonus;
+    protected $points;
 
     /**
      * @var int amount of pins knocked down in this roll
@@ -44,17 +39,13 @@ class Roll
      * Roll constructor.
      *
      * @param int $pins pins knocked down by this roll
-     * @param bool $bonus true if this roll is a bonus one
      */
-    public function __construct(int $pins, bool $bonus)
+    public function __construct(int $pins)
     {
         $this->validate($pins);
 
         $this->pins = $pins;
-        $this->bonus = $bonus;
-
-        // We don't count bonus rolls normally.
-        $this->points = $bonus ? 0 : $pins;
+        $this->points = $pins;
     }
 
     /**
