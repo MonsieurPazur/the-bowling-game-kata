@@ -18,19 +18,24 @@ class Roll
      */
     private $points;
 
+    /**
+     * @var bool true if this roll is a bonus one (from spare or strike in the last frame)
+     */
     private $bonus;
 
     /**
      * Roll constructor.
      *
      * @param int $pins pins knocked down by this roll
+     * @param bool $bonus true if this roll is a bonus one
      */
-    public function __construct(int $pins, $bonus)
+    public function __construct(int $pins, bool $bonus)
     {
-        $this->points = $pins;
         $this->bonus = $bonus;
-        if ($this->bonus) {
+        if ($bonus) {
             $this->points = 0;
+        } else {
+            $this->points = $pins;
         }
     }
 
@@ -52,13 +57,5 @@ class Roll
     public function getPoints(): int
     {
         return $this->points;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBonus(): bool
-    {
-        return $this->bonus;
     }
 }
