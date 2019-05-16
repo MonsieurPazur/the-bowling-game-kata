@@ -160,6 +160,7 @@ class Game
      */
     private function regularRoll(int $pins): void
     {
+        $this->updateFrame();
         $this->makeRoll($pins, false);
 
         // This must be run before checking for new strikes or spares.
@@ -170,7 +171,6 @@ class Game
         } elseif ($this->isSpare()) {
             $this->spare();
         }
-        $this->updateFrame();
     }
 
     /**

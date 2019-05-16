@@ -20,11 +20,6 @@ class Frame
     const MAX_ROLLS = 2;
 
     /**
-     * @var int how many rolls can be made within last frame
-     */
-    const MAX_ROLLS_LAST = 3;
-
-    /**
      * @var int maximum number of pins that may be knocked down in a roll
      */
     const MAX_PINS = 10;
@@ -40,13 +35,9 @@ class Frame
     private $rolls;
 
     /**
-     * @var int how many rolls can be made within this frame
+     * @var int rolls available (to be made) within frame
      */
-    private $maxRolls;
-    /**
-     * @var int
-     */
-    private $bonusRolls;
+    private $availableRolls;
 
     /**
      * Frame constructor.
@@ -56,7 +47,7 @@ class Frame
     public function __construct(bool $last)
     {
         $this->last = $last;
-        $this->maxRolls = $last ? self::MAX_ROLLS_LAST : self::MAX_ROLLS;
+        $this->availableRolls = self::MAX_ROLLS;
 
         $this->rolls = [];
     }
@@ -82,6 +73,9 @@ class Frame
             throw new DomainException();
         }
         $this->rolls[] = $roll;
+        if ($this->isStrike()) {
+            $this->availableRolls--;
+        }
     }
 
     /**
@@ -101,7 +95,7 @@ class Frame
         }
 
         // Then we check if we can roll more within this frame
-        $tooManyRolls = count($this->rolls) + 1 > $this->maxRolls;
+        $tooManyRolls = count($this->rolls) + 1 > $this->availableRolls;
         return !$tooManyPins && !$tooManyRolls;
     }
 
@@ -146,7 +140,7 @@ class Frame
      */
     public function isDone(): bool
     {
-        return count($this->rolls) === $this->maxRolls || ($this->isStrike() && !$this->isLast());
+        return count($this->rolls) === $this->availableRolls;
     }
 
     /**
@@ -164,10 +158,15 @@ class Frame
     }
 
     /**
-     * @param int $bonusRolls
+     * Adds bonus rolls to the last frame.
+     *
+     * @param int $bonusRolls amount of bonus rolls in this frame
      */
     public function addBonusRolls(int $bonusRolls): void
     {
-        $this->bonusRolls = $bonusRolls;
+        if (!$this->isLast()) {
+            throw new DomainException();
+        }
+        $this->availableRolls += $bonusRolls;
     }
 }
