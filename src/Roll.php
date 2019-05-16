@@ -58,16 +58,6 @@ class Roll
     }
 
     /**
-     * Checks whether this roll's points will be counted as bonus.
-     *
-     * @return bool true if this is bonus roll
-     */
-    public function isBonus(): bool
-    {
-        return $this->bonus;
-    }
-
-    /**
      * Adds bonus points from strikes and spares
      *
      * @param int $points amount of bonus points

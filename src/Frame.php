@@ -25,11 +25,6 @@ class Frame
     const MAX_PINS = 10;
 
     /**
-     * @var Roll[] collection of rolls made within this frame
-     */
-    private $rolls;
-
-    /**
      * @var int rolls available (to be made) within frame
      */
     protected $availableRolls;
@@ -38,6 +33,11 @@ class Frame
      * @var int pins that can be knocked down in this frame
      */
     protected $availablePins;
+
+    /**
+     * @var Roll[] collection of rolls made within this frame
+     */
+    private $rolls;
 
     /**
      * Frame constructor.
@@ -57,11 +57,7 @@ class Frame
      */
     public function addRoll($pins): void
     {
-        if ($this->isBonus()) {
-            $roll = new Roll($pins, true);
-        } else {
-            $roll = new Roll($pins, false);
-        }
+        $roll = $this->createRoll($pins);
         if (!$this->canRoll($roll)) {
             throw new DomainException();
         }
@@ -89,23 +85,14 @@ class Frame
     }
 
     /**
-     * Checks whether there was only one roll in this frame.
-     *
-     * @return bool true if there was only one roll
-     */
-    public function isFirstRoll(): bool
-    {
-        return 1 === count($this->rolls);
-    }
-
-    /**
      * Checks whether this frame had a strike.
      *
      * @return bool true if this frame had a strike
      */
     public function isStrike(): bool
     {
-        return $this->isFirstRoll() && self::MAX_PINS == $this->rolls[0]->getPins();
+        // Only one roll in frame (so first) and maximum amount of pins knocked down
+        return 1 === count($this->rolls) && self::MAX_PINS === $this->rolls[0]->getPins();
     }
 
     /**
@@ -157,27 +144,15 @@ class Frame
     }
 
     /**
-     * Checks if this frame rolls will be counted as bonus points.
+     * Creates roll with given pins knocked down.
      *
-     * @return bool true if rolls are bonus
-     */
-    public function isBonus(): bool
-    {
-        return $this->availableRolls > self::MAX_ROLLS;
-    }
-
-    /**
-     * Gets total amount of pins knocked down in all rolls in this frame.
+     * @param int $pins amount of pins knocked down in this roll
      *
-     * @return int total amount of pins knocked down in this frame
+     * @return Roll roll that was created
      */
-    private function getPins(): int
+    protected function createRoll(int $pins): Roll
     {
-        $pins = 0;
-        foreach ($this->rolls as $roll) {
-            $pins += $roll->getPins();
-        }
-        return $pins;
+        return new Roll($pins, false);
     }
 
     /**
@@ -196,5 +171,19 @@ class Frame
     protected function handleAvailablePins(): void
     {
         $this->availablePins -= $this->getCurrentRoll()->getPins();
+    }
+
+    /**
+     * Gets total amount of pins knocked down in all rolls in this frame.
+     *
+     * @return int total amount of pins knocked down in this frame
+     */
+    private function getPins(): int
+    {
+        $pins = 0;
+        foreach ($this->rolls as $roll) {
+            $pins += $roll->getPins();
+        }
+        return $pins;
     }
 }

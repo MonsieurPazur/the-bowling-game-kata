@@ -6,12 +6,29 @@
 
 namespace App;
 
+use DomainException;
+
 /**
  * Class LastFrame
  * @package App
  */
 class LastFrame extends Frame
 {
+    /**
+     * Creates roll with given pins knocked down. Handles bonus rolls.
+     *
+     * @param int $pins amount of pins knocked down in this roll
+     *
+     * @return Roll roll that was created
+     */
+    protected function createRoll(int $pins): Roll
+    {
+        if ($this->isBonus()) {
+            return new Roll($pins, true);
+        } else {
+            return new Roll($pins, false);
+        }
+    }
 
     /**
      * Adds bonus rolls to the last frame.
@@ -45,5 +62,15 @@ class LastFrame extends Frame
         if ($this->availablePins === 0) {
             $this->availablePins = self::MAX_PINS;
         }
+    }
+
+    /**
+     * Checks if this frame rolls will be counted as bonus points.
+     *
+     * @return bool true if rolls are bonus
+     */
+    private function isBonus(): bool
+    {
+        return $this->availableRolls > self::MAX_ROLLS;
     }
 }
