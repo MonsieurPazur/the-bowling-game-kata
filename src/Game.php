@@ -89,11 +89,13 @@ class Game
     private function initFrames(): void
     {
         for ($i = 0; $i < self::FRAMES - 1; $i++) {
-            $this->frames[] = new Frame(false);
+            $this->frames[] = new Frame();
         }
 
-        // Last frame is different
-        $this->frames[] = new Frame(true);
+        // Last frame is different.
+        $this->frames[] = new LastFrame();
+
+        // Mark first frame, as the current one.
         $this->currentFrameIndex = 0;
     }
 
