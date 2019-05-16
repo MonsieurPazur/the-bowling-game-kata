@@ -134,9 +134,9 @@ class Game
         $this->updateBonusPoints($pins);
 
         if ($this->getCurrentFrame()->isStrike()) {
-            $this->strike();
+            $this->twoRollsBonus = $this->getCurrentRoll();
         } elseif ($this->isSpare()) {
-            $this->spare();
+            $this->oneRollBonus = $this->getCurrentRoll();
         }
     }
 
@@ -186,7 +186,6 @@ class Game
      */
     private function strike(): void
     {
-        $this->twoRollsBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::STRIKE_BONUS_ROLLS);
         }
@@ -207,7 +206,6 @@ class Game
      */
     private function spare(): void
     {
-        $this->oneRollBonus = $this->getCurrentRoll();
         if ($this->isLastFrame() && !$this->getCurrentRoll()->isBonus()) {
             $this->getCurrentFrame()->addBonusRolls(self::SPARE_BONUS_ROLLS);
         }
