@@ -99,15 +99,15 @@ class Game
     }
 
     /**
-     * Gets current score from all rolls.
+     * Gets current score from all frames.
      *
      * @return int total game score
      */
     public function score(): int
     {
         $score = 0;
-        foreach ($this->rolls as $roll) {
-            $score += $roll->getPoints();
+        foreach ($this->frames as $frame) {
+            $score += $frame->getPoints();
         }
         return $score;
     }
