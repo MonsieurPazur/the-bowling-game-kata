@@ -297,6 +297,9 @@ class Game
      */
     private function nextFrame(): void
     {
+        if ($this->getCurrentFrame()->isLast()) {
+            throw new DomainException();
+        }
         $this->currentFrame++;
     }
 
