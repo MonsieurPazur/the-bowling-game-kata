@@ -17,7 +17,7 @@ class Frame
     /**
      * @var int how many rolls can be made within regular frame
      */
-    const MAX_ROLLS = 2;
+    public const MAX_ROLLS = 2;
 
     /**
      * @var int rolls available (to be made) within frame
@@ -54,7 +54,7 @@ class Frame
     {
         $roll = $this->createRoll($pins);
         if (!$this->canRoll($roll)) {
-            throw new DomainException();
+            throw new DomainException('Next roll cannot be made.');
         }
         $this->rolls[] = $roll;
 

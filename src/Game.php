@@ -19,7 +19,7 @@ class Game
     /**
      * @var int number of frames that the game consists of
      */
-    const FRAMES = 10;
+    public const FRAMES = 10;
 
     /**
      * @var int index of the current frame
@@ -46,9 +46,6 @@ class Game
      */
     public function __construct()
     {
-        $this->twoRollsBonus = null;
-        $this->oneRollBonus = null;
-
         $this->initFrames();
     }
 
@@ -107,12 +104,12 @@ class Game
      */
     private function updateBonusPoints(int $pins): void
     {
-        if (!is_null($this->oneRollBonus)) {
+        if (null !== $this->oneRollBonus) {
             $this->oneRollBonus->addPoints($pins);
             $this->oneRollBonus = null;
         }
 
-        if (!is_null($this->twoRollsBonus)) {
+        if (null !== $this->twoRollsBonus) {
             $this->twoRollsBonus->addPoints($pins);
 
             // $twoRollsBonus becomes $oneRollBonus, since we need to apply bonus points once more (on the next roll).
@@ -135,7 +132,7 @@ class Game
     {
         if ($this->getCurrentFrame()->isDone()) {
             if ($this->getCurrentFrame() instanceof LastFrame) {
-                throw new DomainException();
+                throw new DomainException("Can't go pass last frame.");
             }
             $this->currentFrameIndex++;
         }

@@ -18,12 +18,12 @@ class Roll
     /**
      * @var int minimum number of pins that may be knocked down in a roll
      */
-    const MIN_PINS = 0;
+    public const MIN_PINS = 0;
 
     /**
      * @var int maximum number of pins that may be knocked down in a roll
      */
-    const MAX_PINS = 10;
+    public const MAX_PINS = 10;
 
     /**
      * @var int amount of points (from knocked down pins and bonus points)
@@ -86,10 +86,10 @@ class Roll
     private function validate(int $pins): void
     {
         if ($pins < self::MIN_PINS) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException("Can't roll less than " . self::MIN_PINS . ' pins');
         }
         if ($pins > self::MAX_PINS) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException("Can't roll more than " . self::MAX_PINS . ' pins');
         }
     }
 }

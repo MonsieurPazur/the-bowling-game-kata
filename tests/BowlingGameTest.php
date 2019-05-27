@@ -39,7 +39,7 @@ class BowlingGameTest extends TestCase
      * @param array $input number of pins to knock down in each roll
      * @param int $expected score after a roll
      */
-    public function testRolls(array $input, int $expected)
+    public function testRolls(array $input, int $expected): void
     {
         foreach ($input as $pins) {
             $this->game->roll($pins);
@@ -55,7 +55,7 @@ class BowlingGameTest extends TestCase
      * @param array $input number of pins to knock down in each roll
      * @param string $expected exception class
      */
-    public function testInvalidRolls(array $input, string $expected)
+    public function testInvalidRolls(array $input, string $expected): void
     {
         $this->expectException($expected);
         foreach ($input as $pins) {
@@ -68,7 +68,7 @@ class BowlingGameTest extends TestCase
      *
      * @return Generator
      */
-    public function rollProvider()
+    public function rollProvider(): Generator
     {
         yield 'single zero' => [
             [0],
@@ -137,7 +137,7 @@ class BowlingGameTest extends TestCase
      *
      * @return Generator
      */
-    public function invalidRollProvider()
+    public function invalidRollProvider(): Generator
     {
         yield 'negative' => [
             [-1],

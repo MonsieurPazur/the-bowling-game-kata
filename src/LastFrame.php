@@ -23,9 +23,9 @@ class LastFrame extends Frame
     {
         if ($this->isBonus()) {
             return new BonusRoll($pins);
-        } else {
-            return new Roll($pins);
         }
+
+        return new Roll($pins);
     }
 
     /**
